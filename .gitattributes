@@ -4,3 +4,4 @@
 *.json text eol=lf
 *.cjs text eol=lf
 *.stl binary
+*.yml text eol=lf

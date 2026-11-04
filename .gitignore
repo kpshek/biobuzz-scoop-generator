@@ -13,3 +13,6 @@ Desktop.ini
 
 # Optional local tooling
 node_modules/
+
+# GitHub Pages deployment output
+_site/

@@ -2,6 +2,16 @@
 
 An offline HTML/JavaScript tool for designing a curved shooter scoop with a rotatable 3D preview, binary STL export, and shareable JSON settings. Open **BioBuzz_Scoop_Generator.html** in Chrome or Edge. No installation, server, build step, or external JavaScript dependencies are required.
 
+## Public website and automatic deployment
+
+Open **[BioBuzz Scoop Generator](https://kpshek.github.io/biobuzz-scoop-generator/)** to use the hosted app. The hosted app processes JSON and STL files locally in your browser, just like the downloaded HTML.
+
+GitHub Pages uses the [Deploy GitHub Pages workflow](https://github.com/kpshek/biobuzz-scoop-generator/actions/workflows/pages.yml). Every push to `main` runs the settings and STL checks, copies `BioBuzz_Scoop_Generator.html` to the published site's `index.html`, includes the example JSON configurations, and deploys the result. The standalone source file remains the single application source; there is no duplicate HTML to maintain. Tests and repository configuration are excluded from the site artifact.
+
+Repository **Settings > Pages > Build and deployment > Source** must be set to **GitHub Actions**. To redeploy an existing commit, open **Actions > Deploy GitHub Pages > Run workflow** and select `main`. A failed check stops publication. The workflow uses the `github-pages` environment and needs no additional secrets or packages.
+
+The deployment directory `_site/` is generated during the workflow and is ignored by Git. The app also remains usable offline by opening the standalone HTML file.
+
 ## Use the generator
 
 1. Open `BioBuzz_Scoop_Generator.html` in your browser.
@@ -48,4 +58,4 @@ node --test tests/app.test.cjs
 
 These checks exercise the application script with a minimal browser stub; they do not validate real browser rendering or slicer behavior.
 
-Source conversation: [Design Curved Shooting Guide](https://chatgpt.com/c/6ae7be32-b298-83ea-b4b9-140782f391c0). This project is maintained as a local Git repository; no remote is required to run it.
+Source conversation: [Design Curved Shooting Guide](https://chatgpt.com/c/6ae7be32-b298-83ea-b4b9-140782f391c0). The public website is hosted on GitHub Pages; no remote or network connection is required to run the downloaded HTML.
