@@ -28,10 +28,10 @@ Ready-to-import examples:
 
 | File | Entry / exit widths | Main length | Height | Angle | Entry extension |
 | --- | --- | --- | --- | --- | --- |
-| `examples/default-settings.json` | 87 / 87 mm | 120 mm | 150 mm | 65° | 0 mm |
+| `examples/default-settings.json` | 90 / 81 mm | 120 mm | 150 mm | 65° | 50 mm |
 | `examples/120-to-60-20mm-settings.json` | 120 / 60 mm | 120 mm | 150 mm | 65° | 20 mm |
 
-Both use the lightweight preset, exact dimensions, and standard STL quality. The tapered example has a total length of 140 mm. Its 60 mm exit is narrower than the 71 mm reference ball diameter, which produces an advisory warning while allowing export.
+The default configuration uses solid sides, fine STL quality, a 50 mm entry-column depth, and a total length of 170 mm. The tapered example uses the lightweight preset and standard STL quality. Both keep exact dimensions. The tapered example has a total length of 140 mm. Its 60 mm exit is narrower than the 71 mm reference ball diameter, which produces an advisory warning while allowing export.
 
 Settings files use `format: "biobuzz-scoop-settings"`, `schemaVersion: 1`, `units: "mm"`, and a `settings` object. Required settings are `width`, `exitWidth`, `length`, `height`, `angle`, `entryExtension`, `preset`, `fit`, `entry`, `step`, `ball`, `hole`, `mountDepth`, `pitch`, and `edge`. The `step` field maps to the STL quality control (1.25 fast, 0.85 standard, 0.6 fine). Optional export metadata includes `exportedAt` and the original generator revision. The schema version describes the JSON format; Git tracks application revisions.
 

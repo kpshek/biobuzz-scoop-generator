@@ -24,26 +24,26 @@ button{cursor:pointer;border:0;border-radius:9px;font:700 14px system-ui;padding
 <section class="panel controls">
  <div class="label-head">01 / Scoop dimensions</div>
  <div class="grid2">
-  <div class="field"><label for="width">Entry outside width</label><div class="inputWrap"><input id="width" type="number" step="any" min="0.01" value="87"><span class="unit">mm</span></div></div>
-  <div class="field"><label for="exitWidth">Exit outside width</label><div class="inputWrap"><input id="exitWidth" type="number" step="any" min="0.01" value="87"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="width">Entry outside width</label><div class="inputWrap"><input id="width" type="number" step="any" min="0.01" value="90"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="exitWidth">Exit outside width</label><div class="inputWrap"><input id="exitWidth" type="number" step="any" min="0.01" value="81"><span class="unit">mm</span></div></div>
   <div class="field"><label for="length">Main ramp length</label><div class="inputWrap"><input id="length" type="number" step="1" min="45" max="450" value="120"><span class="unit">mm</span></div></div>
   <div class="field"><label for="height">Overall height</label><div class="inputWrap"><input id="height" type="number" step="1" min="30" max="400" value="150"><span class="unit">mm</span></div></div>
   <div class="field"><label for="angle">Exit angle</label><div class="inputWrap"><input id="angle" type="number" step="0.5" min="0.5" max="85" value="65"><span class="unit">°</span></div></div>
-  <div class="field"><label for="entryExtension">Entry extension length</label><div class="inputWrap"><input id="entryExtension" type="number" min="0" max="200" step="0.5" value="0"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="entryExtension">Entry extension length</label><div class="inputWrap"><input id="entryExtension" type="number" min="0" max="200" step="0.5" value="50"><span class="unit">mm</span></div></div>
  </div>
  <p class="small" style="margin:9px 0 0"><strong>New:</strong> Entry extension projects <em>ahead of the side walls</em> at the full entry outside width. Its top surface gradually rises from a 0.6 mm leading lip to the normal floor height. An extension of <strong>0 mm</strong> leaves the main ramp geometry unchanged. Main ramp length excludes the additional extension.</p>
  <div class="divider"></div>
  <div class="label-head">02 / Shape &amp; print settings</div>
  <div class="grid2">
-  <div class="field"><label for="preset">Material preset</label><select id="preset"><option value="light">Lightweight</option><option value="ultralight">Ultralight</option><option value="solid">Solid sides</option></select></div>
+  <div class="field"><label for="preset">Material preset</label><select id="preset"><option value="light">Lightweight</option><option value="ultralight">Ultralight</option><option value="solid" selected>Solid sides</option></select></div>
   <div class="field"><label for="fit">When dimensions conflict</label><select id="fit"><option value="exact">Keep all dimensions</option><option value="height">Reduce height</option><option value="length">Increase length</option></select></div>
   <div class="field"><label for="entry">Flat entry inside walls</label><div class="inputWrap"><input id="entry" type="number" min="5" step="1" value="25"><span class="unit">mm</span></div></div>
-  <div class="field"><label for="quality">STL quality</label><select id="quality"><option value="1.25">Fast / smaller file</option><option value="0.85" selected>Standard</option><option value="0.6">Fine / larger file</option></select></div>
+  <div class="field"><label for="quality">STL quality</label><select id="quality"><option value="1.25">Fast / smaller file</option><option value="0.85">Standard</option><option value="0.6" selected>Fine / larger file</option></select></div>
  </div>
  <div class="divider"></div>
  <div class="label-head">03 / Mounting — entry column only</div>
  <div class="grid2">
-  <div class="field"><label for="mountDepth">Entry-column depth</label><div class="inputWrap"><input id="mountDepth" type="number" min="16" max="100" step="1" value="34"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="mountDepth">Entry-column depth</label><div class="inputWrap"><input id="mountDepth" type="number" min="16" max="100" step="1" value="50"><span class="unit">mm</span></div></div>
   <div class="field"><label for="pitch">Mounting grid pitch</label><div class="inputWrap"><input id="pitch" type="number" min="6" max="32" step="0.5" value="8"><span class="unit">mm</span></div></div>
   <div class="field"><label for="hole">M4 clearance hole Ø</label><div class="inputWrap"><input id="hole" type="number" min="3" max="8" value="4.6" step="0.1"><span class="unit">mm</span></div></div>
   <div class="field"><label for="edge">Hole grid edge offset</label><div class="inputWrap"><input id="edge" type="number" min="3" max="32" step="0.5" value="8"><span class="unit">mm</span></div></div>
@@ -66,7 +66,7 @@ button{cursor:pointer;border:0;border-radius:9px;font:700 14px system-ui;padding
  <p class="small">Your JSON file can be emailed or shared with teammates. Settings are saved and loaded locally in the browser—nothing is uploaded. Only recognized, valid parameters are applied.</p>
 </section>
 <section class="panel">
- <div class="viewer"><canvas id="view" aria-label="Interactive 3D preview of BioBuzz shooter scoop"></canvas><div class="view-top"><span class="view-name">3D model preview</span><span class="hint">Drag to rotate · Scroll to zoom</span></div><div class="view-bottom"><div class="stat"><strong id="actual-size">120 × 87 × 150</strong><span>Including extension (mm)</span></div><div class="stat"><strong id="holes">—</strong><span>Entry holes / side</span></div><div class="stat"><strong id="inner">—</strong><span>Clear width: entry → exit (mm)</span></div></div></div>
+ <div class="viewer"><canvas id="view" aria-label="Interactive 3D preview of BioBuzz shooter scoop"></canvas><div class="view-top"><span class="view-name">3D model preview</span><span class="hint">Drag to rotate · Scroll to zoom</span></div><div class="view-bottom"><div class="stat"><strong id="actual-size">170 × 90 × 150</strong><span>Including extension (mm)</span></div><div class="stat"><strong id="holes">—</strong><span>Entry holes / side</span></div><div class="stat"><strong id="inner">—</strong><span>Clear width: entry → exit (mm)</span></div></div></div>
  <div class="info"><h2>How to print</h2><p><strong>Orientation:</strong> Stand the underside of the entry extension on the print bed (or, at 0 mm extension, the existing flat entry end). The wedge's underside remains flat at Z = 0; its leading lip is 0.6 mm high. Orient the curved floor vertically, and inspect the slicer preview with supports off. Add a brim for stability.</p><p><strong>Suggested setup:</strong> PETG, 0.24–0.28 mm layers, 3 perimeters, 5–10% infill. Check the slicer's bridging preview around the M4 bolt holes and pointed side-panel openings. Strong width tapers can create new overhangs at the floor edges. The extended entry has an unsupported free tip in use, so check stiffness before competition.</p><p>Shared <code>.json</code> files contain all editable inputs. The generated <code>.stl</code> is in millimeters. The curved floor and side walls taper together, but the entry mounting-column faces remain parallel. The extension does not add side walls or mounting holes. Only the entry-end mounting column has holes. Three slightly overlapping shells are intentional and are normally combined by the slicer. There is no external JavaScript dependency.</p></div>
 </section>
 </main><footer>Prototype CAD · smooth width taper begins after the fixed-width entry mounting column; the optional floor-only entry extension projects before that column. Entry-end M4 grid is provisional until the supplied STEP reference is translated to this model. Verify fasteners, ball-wheel clearance, rigidity, and print-layer orientation.</footer>
