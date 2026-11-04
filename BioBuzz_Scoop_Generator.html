@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BioBuzz · Scoop Generator — shareable JSON settings</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1320;--panel:#142235;--panel2:#172a40;--line:#2d455c;--text:#eef5fa;--muted:#93a8bd;--accent:#38d2ba;--warn:#ffce73;--err:#ff8587}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{padding:18px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+header small{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--accent);font-weight:800}h1{font-size:21px;letter-spacing:-.04em;margin:0}header .pill{border:1px solid #287e78;color:#8af3e6;border-radius:20px;padding:6px 10px;font-size:12px;white-space:nowrap}
+main{max-width:1480px;padding:22px;margin:auto;display:grid;grid-template-columns:minmax(300px,365px) minmax(360px,1fr);gap:18px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.controls{padding:23px}.label-head{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:2px 0 14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;color:#c4d7e4;font-weight:650}.inputWrap{position:relative}.field input,.field select{width:100%;height:42px;background:#0d1b2b;border:1px solid #355069;border-radius:8px;color:white;padding:8px 41px 8px 12px;font:600 17px system-ui;outline:none}.field select{font-size:14px;padding-right:10px}.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 2px #1a6f67}.unit{position:absolute;right:12px;top:10px;color:var(--muted);pointer-events:none}.divider{border-top:1px solid var(--line);margin:18px 0}.details{display:grid;grid-template-columns:1fr 1fr;gap:12px}.text-muted{color:var(--muted);font-size:12px}.row{display:flex;gap:12px;align-items:center}.row span{color:var(--muted)}
+button{cursor:pointer;border:0;border-radius:9px;font:700 14px system-ui;padding:12px 14px;transition:background .2s}button.primary{width:100%;background:var(--accent);color:#092626;margin-top:15px}button.primary:hover{background:#8cebdc}button:disabled{cursor:not-allowed;opacity:.5}button.secondary{background:#25405b;color:#e6f7f5;padding:8px 12px}button.secondary:hover{background:#3a5a72}.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.share-actions button{min-height:43px;padding:10px 9px}.file-input{display:none}#settingsStatus{min-height:20px;margin-top:9px;color:#b2e6d9;font-size:12px;overflow-wrap:anywhere}#settingsStatus.error{color:#ffbfc2}@media(max-width:380px){.share-actions{grid-template-columns:1fr}}.notice{padding:11px 12px;background:#112b34;border-left:3px solid var(--accent);border-radius:5px;font-size:12px;margin-top:13px}.notice.warn{background:#352b24;border-left-color:var(--warn);color:#ffe3aa}.notice.err{background:#391e27;border-left-color:var(--err);color:#ffbfc2}
+.viewer{position:relative;min-height:460px;background:radial-gradient(ellipse at 57% 36%,#21374c 0%,#112032 52%,#0d192a 100%)}#view{width:100%;height:460px;display:block;touch-action:none;cursor:grab}#view:active{cursor:grabbing}.view-top{position:absolute;top:17px;left:18px;right:18px;pointer-events:none;display:flex;justify-content:space-between;gap:12px}.view-top .view-name{font-size:13px;font-weight:700}.view-top .hint{color:var(--muted);font-size:12px}.view-bottom{position:absolute;bottom:15px;left:18px;right:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.stat{background:#081928cf;border:1px solid #355069;border-radius:7px;padding:8px 11px;font-size:12px}.stat strong{font-size:15px;display:block;color:white}.stat span{color:#99b1c5}
+.info{padding:19px 23px}.info h2{font-size:15px;margin:0 0 10px}.info p{font-size:13px;color:#b9cada;margin:8px 0}.info code{color:#91f1e4}.small{font-size:11px;color:var(--muted)}#console{font-size:12px;word-break:break-word;min-height:18px;color:#a9dbc9;margin-top:9px}footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-size:11px}
+@media(max-width:850px){main{grid-template-columns:1fr;padding:12px}.controls{padding:18px}header{padding:15px}#view{height:380px}.viewer{min-height:380px}.view-top .hint{display:none}}
+</style>
+</head>
+<body>
+<header><div><small>goBILDA · BioBuzz · CAD tool</small><h1>Shooter Scoop Generator</h1></div><div class="pill">Offline · Shareable settings</div></header>
+<main>
+<section class="panel controls">
+ <div class="label-head">01 / Scoop dimensions</div>
+ <div class="grid2">
+  <div class="field"><label for="width">Entry outside width</label><div class="inputWrap"><input id="width" type="number" step="any" min="0.01" value="87"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="exitWidth">Exit outside width</label><div class="inputWrap"><input id="exitWidth" type="number" step="any" min="0.01" value="87"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="length">Main ramp length</label><div class="inputWrap"><input id="length" type="number" step="1" min="45" max="450" value="120"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="height">Overall height</label><div class="inputWrap"><input id="height" type="number" step="1" min="30" max="400" value="150"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="angle">Exit angle</label><div class="inputWrap"><input id="angle" type="number" step="0.5" min="0.5" max="85" value="65"><span class="unit">°</span></div></div>
+  <div class="field"><label for="entryExtension">Entry extension length</label><div class="inputWrap"><input id="entryExtension" type="number" min="0" max="200" step="0.5" value="0"><span class="unit">mm</span></div></div>
+ </div>
+ <p class="small" style="margin:9px 0 0"><strong>New:</strong> Entry extension projects <em>ahead of the side walls</em> at the full entry outside width. Its top surface gradually rises from a 0.6 mm leading lip to the normal floor height. An extension of <strong>0 mm</strong> leaves the main ramp geometry unchanged. Main ramp length excludes the additional extension.</p>
+ <div class="divider"></div>
+ <div class="label-head">02 / Shape &amp; print settings</div>
+ <div class="grid2">
+  <div class="field"><label for="preset">Material preset</label><select id="preset"><option value="light">Lightweight</option><option value="ultralight">Ultralight</option><option value="solid">Solid sides</option></select></div>
+  <div class="field"><label for="fit">When dimensions conflict</label><select id="fit"><option value="exact">Keep all dimensions</option><option value="height">Reduce height</option><option value="length">Increase length</option></select></div>
+  <div class="field"><label for="entry">Flat entry inside walls</label><div class="inputWrap"><input id="entry" type="number" min="5" step="1" value="25"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="quality">STL quality</label><select id="quality"><option value="1.25">Fast / smaller file</option><option value="0.85" selected>Standard</option><option value="0.6">Fine / larger file</option></select></div>
+ </div>
+ <div class="divider"></div>
+ <div class="label-head">03 / Mounting — entry column only</div>
+ <div class="grid2">
+  <div class="field"><label for="mountDepth">Entry-column depth</label><div class="inputWrap"><input id="mountDepth" type="number" min="16" max="100" step="1" value="34"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="pitch">Mounting grid pitch</label><div class="inputWrap"><input id="pitch" type="number" min="6" max="32" step="0.5" value="8"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="hole">M4 clearance hole Ø</label><div class="inputWrap"><input id="hole" type="number" min="3" max="8" value="4.6" step="0.1"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="edge">Hole grid edge offset</label><div class="inputWrap"><input id="edge" type="number" min="3" max="32" step="0.5" value="8"><span class="unit">mm</span></div></div>
+  <div class="field"><label for="ball">Ball diameter (reference only)</label><div class="inputWrap"><input id="ball" type="number" min="1" max="300" value="71" step="1"><span class="unit">mm</span></div></div>
+ </div>
+ <p class="small" style="margin:10px 0 0">Provisional 8 mm goBILDA grid. Every compatible hole in the vertical entry-end column is included on both side panels. Other support columns are completely unperforated.</p>
+ <div id="notice" class="notice">Entry-end mounting only. The supplied goBILDA STEP reference has not yet been replicated; the current grid remains provisional.</div>
+ <button class="primary" id="download">↓ Generate &amp; download STL</button>
+ <div id="console" role="status" aria-live="polite"></div>
+ <p class="small">Holes use the configurable grid inside the solid entry-end mounting column only. All other structural columns have no mounting holes. This grid is provisional, not an exact copy of the supplied STEP reference.</p>
+ <div class="divider"></div>
+ <div class="label-head">04 / Share &amp; reuse settings</div>
+ <p class="text-muted">Export all dimensions, ramp options, material preset, and mounting settings as a portable JSON file. Anyone using this generator can import that file to recreate the same configuration.</p>
+ <div class="share-actions">
+  <button type="button" class="secondary" id="exportSettings">↓ Export settings JSON</button>
+  <button type="button" class="secondary" id="importSettings">↑ Import settings JSON</button>
+ </div>
+ <input class="file-input" type="file" id="settingsFile" accept=".json,application/json" aria-label="Choose a BioBuzz settings JSON file">
+ <div id="settingsStatus" role="status" aria-live="polite"></div>
+ <p class="small">Your JSON file can be emailed or shared with teammates. Settings are saved and loaded locally in the browser—nothing is uploaded. Only recognized, valid parameters are applied.</p>
+</section>
+<section class="panel">
+ <div class="viewer"><canvas id="view" aria-label="Interactive 3D preview of BioBuzz shooter scoop"></canvas><div class="view-top"><span class="view-name">3D model preview</span><span class="hint">Drag to rotate · Scroll to zoom</span></div><div class="view-bottom"><div class="stat"><strong id="actual-size">120 × 87 × 150</strong><span>Including extension (mm)</span></div><div class="stat"><strong id="holes">—</strong><span>Entry holes / side</span></div><div class="stat"><strong id="inner">—</strong><span>Clear width: entry → exit (mm)</span></div></div></div>
+ <div class="info"><h2>How to print</h2><p><strong>Orientation:</strong> Stand the underside of the entry extension on the print bed (or, at 0 mm extension, the existing flat entry end). The wedge's underside remains flat at Z = 0; its leading lip is 0.6 mm high. Orient the curved floor vertically, and inspect the slicer preview with supports off. Add a brim for stability.</p><p><strong>Suggested setup:</strong> PETG, 0.24–0.28 mm layers, 3 perimeters, 5–10% infill. Check the slicer's bridging preview around the M4 bolt holes and pointed side-panel openings. Strong width tapers can create new overhangs at the floor edges. The extended entry has an unsupported free tip in use, so check stiffness before competition.</p><p>Shared <code>.json</code> files contain all editable inputs. The generated <code>.stl</code> is in millimeters. The curved floor and side walls taper together, but the entry mounting-column faces remain parallel. The extension does not add side walls or mounting holes. Only the entry-end mounting column has holes. Three slightly overlapping shells are intentional and are normally combined by the slicer. There is no external JavaScript dependency.</p></div>
+</section>
+</main><footer>Prototype CAD · smooth width taper begins after the fixed-width entry mounting column; the optional floor-only entry extension projects before that column. Entry-end M4 grid is provisional until the supplied STEP reference is translated to this model. Verify fasteners, ball-wheel clearance, rigidity, and print-layer orientation.</footer>
+<script>
+'use strict';
+(function(){
+const $=id=>document.getElementById(id), canvas=$('view');
+const ids=['width','exitWidth','length','height','angle','entryExtension','preset','fit','entry','quality','ball','hole','mountDepth','pitch','edge'];
+let yaw=-0.62, pitch=0.43, zoom=1, gl=null, program=null, buffer=null, vertexCount=0, current=null, lastError='', debounce;
+const TAU=2*Math.PI;
+const fmt=x=>Number(x.toFixed(2)).toString();
+const presets={light:{floor:2.4,side:3,topRail:8,bottomRail:9,rib:6.5},ultralight:{floor:2,side:2.6,topRail:6.5,bottomRail:7,rib:5.5},solid:{floor:3.5,side:4,topRail:8,bottomRail:9,rib:6.5}};
+function val(id){return Number($(id).value)};
+function read(){return {width:val('width'),exitWidth:val('exitWidth'),length:val('length'),height:val('height'),angle:val('angle'),preset:$('preset').value,fit:$('fit').value,entry:val('entry'),entryExtension:val('entryExtension'),step:val('quality'),ball:val('ball'),hole:val('hole'),mountDepth:val('mountDepth'),pitch:val('pitch'),edge:val('edge')}}
+function buildConfig(v){
+ const p={...presets[v.preset]};let L=v.length,H=v.height,W=v.width,Wexit=v.exitWidth,angle=v.angle,E=v.entry,entryExtension=v.entryExtension;
+ if(Object.values(v).some(x=>typeof x==='number'&&!Number.isFinite(x)))throw Error('All dimension fields must contain numbers.');
+ if(W<=0||Wexit<=0)throw Error('Entry and exit outside widths must both be greater than zero.');
+ if(entryExtension<0||entryExtension>200)throw Error('Entry extension length must be between 0 and 200 mm.');
+ // The ball is an advisory measurement, never a limit on the generated width.
+ // For very narrow guides, proportionally thin the side walls so they do not overlap.
+ const requestedSide=p.side; p.side=Math.min(p.side,Math.min(W,Wexit)*0.20);
+ if(L<E+20)throw Error('Length must exceed flat entry length by at least 20 mm.');
+ if(H<=p.floor+8+18)throw Error('Height is too small for the selected ramp and mounting rails.');
+ if(!(angle>=0.5&&angle<=85))throw Error('Exit angle must be between 0.5° and 85°.');
+ if(L>450||H>400||E<5||v.ball<1||v.hole<3||v.hole>8)throw Error('A non-width dimension is outside supported limits.');
+ if(!(v.pitch>=v.hole+2.0))throw Error('Mounting grid pitch must exceed hole diameter by at least 2 mm to preserve material between holes.');
+ if(v.mountDepth<=v.edge+v.hole/2+3)throw Error('Entry column must be deep enough for mounting holes and edge clearance.');
+ if(v.mountDepth>=L-14)throw Error('Entry column depth must leave at least 14 mm for the remaining curved section.');
+ if(v.edge < v.hole/2+1.5)throw Error('Grid offset must leave at least 1.5 mm material between each hole and the column edge.');
+ const theta=angle*Math.PI/180, lip=8, minPower=1.1, change=[];
+ if(Math.min(W,Wexit)<v.ball)change.push(`The guide narrows below the ${v.ball} mm ball diameter; STL generation remains enabled.`);
+ if(p.side<requestedSide)change.push(`Side walls reduced to ${p.side.toFixed(2)} mm to fit the narrower of the two outside widths.`);
+ if(p.side<0.8)change.push('Side walls are under 0.8 mm; verify nozzle and slicer can resolve them.');
+ if(Wexit<W*0.55)change.push('Aggressive narrowing may introduce unsupported overhangs near the ramp edges; inspect the slicer layer preview.');
+ let run=L-E,rise=H-lip-p.floor,power=run*Math.tan(theta)/rise, curveType='power';
+ if(power<minPower&&v.fit!=='exact'){
+  if(v.fit==='height'){rise=run*Math.tan(theta)/minPower;H=rise+lip+p.floor;change.push(`Height adjusted to ${H.toFixed(1)} mm to keep the ramp continuously steepening.`);}
+  else {run=minPower*rise/Math.tan(theta);L=run+E;change.push(`Length adjusted to ${L.toFixed(1)} mm to keep the ramp continuously steepening.`);}
+  power=minPower;
+ }
+ if(power<minPower){curveType='hermite';change.push('This angle is shallow for the selected length and height: the curve must become steeper in the middle, then flatten near the exit. Check wheel contact and printability.');}
+ // The floor is flat for x <= entry and slopes smoothly upward afterwards.
+ function zTop(x){let u=Math.max(0,Math.min(1,(x-E)/run));if(x<=E)return p.floor; if(curveType==='power')return p.floor+rise*Math.pow(u,power);let m=power;return p.floor+rise*((3-m)*u*u+(m-2)*u*u*u);}
+ function slope(x){if(x<=E)return 0;let u=Math.max(0,Math.min(1,(x-E)/run));if(curveType==='power')return rise*power/run*Math.pow(u,power-1);let m=power;return rise/run*(2*(3-m)*u+3*(m-2)*u*u);}
+ function zUnder(x){return Math.max(0,zTop(x)-p.floor*Math.sqrt(1+Math.pow(slope(x),2)));}
+ // The mounting pattern exists exclusively in the solid vertical entry column.
+ // This uses a generic M4 grid until an actual goBILDA STEP reference is available.
+ // We keep the rest of the structural ribs for rigidity, but never drill them.
+ const mountDepth=v.mountDepth, cols=[16];
+ for(let x=64;x<L-7.3;x+=48)cols.push(x);
+ let windows=[];
+ if(v.preset!=='solid')for(let i=0;i<cols.length-1;i++){
+  const lo=Math.max(cols[i]+p.rib,mountDepth+4),initialHi=cols[i+1]-p.rib,top=H-p.topRail;
+  let hi=initialHi;
+  while(hi>lo+11){let roofEdge=top-(hi-lo)*1.1/2;
+   if(roofEdge-zTop(lo)-p.bottomRail>3 && roofEdge-zTop(hi)-p.bottomRail>3)break;hi-=0.5;
+  }
+  if(hi>lo+11)windows.push({lo,hi,mid:(lo+hi)/2,apex:top,slope:1.1});
+ }
+ // For short ramp designs, make a cutout after the entry column when no
+ // 48mm-spaced support ribs exist; pointed roof remains support-free.
+ if(v.preset!=='solid'&&windows.length===0&&L-mountDepth>35){
+  const lo=mountDepth+5,top=H-p.topRail;let hi=L-9;
+  while(hi>lo+11){let roofEdge=top-(hi-lo)*1.1/2;
+   if(roofEdge-zTop(lo)-p.bottomRail>3&&roofEdge-zTop(hi)-p.bottomRail>3)break;hi-=0.5;}
+  if(hi>lo+11)windows.push({lo,hi,mid:(lo+hi)/2,apex:top,slope:1.1});
+ }
+ let holes=[];const r=v.hole/2,limit=mountDepth-v.edge;
+ for(let x=v.edge;x<=limit+1e-5;x+=v.pitch){
+  // Only include complete holes with surrounding material and no floor overlap.
+  if(x-r<2.5||x+r>mountDepth-2.5)continue;
+  for(let z=v.edge;z<=H-v.edge+1e-5;z+=v.pitch){
+   if(z+r>H-2.5)continue;
+   if([x-r,x,x+r].every(xx=>z-r>zTop(xx)+3.5))holes.push({x,z,r});
+  }
+ }
+ if(!holes.length)change.push('No entry-end mounting holes fit within these dimensions; increase the entry-column depth or reduce the grid offset.');
+ // The entry-end mounting column remains exactly parallel for predictable
+ // goBILDA alignment. A smooth cubic taper begins immediately after it.
+ // Both side walls and the ball-contact floor follow the same tapered edges.
+ function widthAt(x){const u=Math.max(0,Math.min(1,(x-mountDepth)/(L-mountDepth)));const smooth=u*u*(3-2*u);return W+(Wexit-W)*smooth;}
+ function lowY(x){return (Math.max(W,Wexit)-widthAt(x))/2;}
+ function highY(x){return (Math.max(W,Wexit)+widthAt(x))/2;}
+ const maxWidth=Math.max(W,Wexit);
+ const minWidth=Math.min(W,Wexit)-2*p.side;
+ const entryInner=W-2*p.side,exitInner=Wexit-2*p.side;
+ // The optional leading extension occupies x in [-entryExtension, 0]. The
+ // side panels and mounting holes retain their x >= 0 positions. The
+ // extension has full outside entry width and a smooth, thin raised lip.
+ const entryTipThickness=0.6;
+ const smoothstep=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+ function floorTop(x){if(x>=0||entryExtension===0)return zTop(Math.max(0,x));const u=(x+entryExtension)/entryExtension;return entryTipThickness+(p.floor-entryTipThickness)*smoothstep(u);}
+ function floorUnder(x){return x<0?0:zUnder(x);}
+ // The extension is exactly entry-wide; over the first 4 mm inside the
+ // mounted column the floor edge eases inward under each side wall.
+ // This avoids a width discontinuity and keeps the overlapping shells fused
+ // by ordinary slicers without altering the main ramp model when extension = 0.
+ function floorInset(x){if(entryExtension===0)return p.side/2;return p.side/2*smoothstep(Math.max(0,x)/4);}
+ function floorLow(x){return lowY(Math.max(0,x))+floorInset(x);}
+ function floorHigh(x){return highY(Math.max(0,x))-floorInset(x);}
+ return {v,p,L,H,W,Wexit,maxWidth,run,rise,power,curveType,zTop,zUnder,slope,windows,holes,cols,mountDepth,change,minWidth,entryInner,exitInner,widthAt,lowY,highY,entryExtension,entryTipThickness,floorTop,floorUnder,floorLow,floorHigh,totalLength:L+entryExtension};
+}
+function phi(x,z,c){
+ let d=Math.min(x,c.L-x,z-c.zTop(x)+0.55,c.H-z);
+ // Each cutout has sloping (pointed) upper edges for upright support-free printing.
+ for(const w of c.windows){if(x<w.lo-3||x>w.hi+3)continue;const roof=w.apex-w.slope*Math.abs(x-w.mid),bottom=c.zTop(x)+c.p.bottomRail;d=Math.min(d,Math.max(w.lo-x,x-w.hi,bottom-z,z-roof));}
+ for(const h of c.holes){if(Math.abs(x-h.x)>h.r+3||Math.abs(z-h.z)>h.r+3)continue;d=Math.min(d,Math.hypot(x-h.x,z-h.z)-h.r);}
+ return d;
+}
+// Triangulate a closed 2D region by clipping a regular triangular lattice to
+// a signed contour. This supports arbitrary curved boundaries + circular holes.
+function panelTriangles(c,step){
+ const nx=Math.ceil(c.L/step),nz=Math.ceil(c.H/step),dx=c.L/nx,dz=c.H/nz;
+ const values=new Float64Array((nx+1)*(nz+1));
+ for(let j=0;j<=nz;j++)for(let i=0;i<=nx;i++)values[j*(nx+1)+i]=phi(i*dx,j*dz,c);
+ const verts=[];const edgeMap=new Map();let sideArea=0;
+ const addTri=(a,b,d)=>{
+  const ar=(b[0]-a[0])*(d[1]-a[1])-(b[1]-a[1])*(d[0]-a[0]);if(Math.abs(ar)<1e-9)return;
+  if(ar<0){let tmp=b;b=d;d=tmp;}
+  verts.push(a,b,d);sideArea+=Math.abs(ar)/2;
+  for(const [u,v] of [[a,b],[b,d],[d,a]]){
+   const ku=`${Math.round(u[0]*1e5)},${Math.round(u[1]*1e5)}`,kv=`${Math.round(v[0]*1e5)},${Math.round(v[1]*1e5)}`;
+   const key=ku<kv?ku+'|'+kv:kv+'|'+ku;
+   if(edgeMap.has(key))edgeMap.delete(key);else edgeMap.set(key,[u,v]);
+  }
+ };
+ const clip=(triangle)=>{
+  let out=triangle;
+  for(let k=0;k<3;k++){} // Clip to phi >= 0 in a single pass.
+  const next=[];
+  for(let i=0;i<out.length;i++){
+   const a=out[i],b=out[(i+1)%out.length],insideA=a[2]>=0,insideB=b[2]>=0;
+   if(insideA)next.push(a);
+   if(insideA!==insideB){let t=a[2]/(a[2]-b[2]);t=Math.min(1,Math.max(0,t));next.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,0]);}
+  }
+  if(next.length>=3)for(let k=1;k+1<next.length;k++)addTri(next[0],next[k],next[k+1]);
+ };
+ for(let j=0;j<nz;j++)for(let i=0;i<nx;i++){
+  let a=[i*dx,j*dz,values[j*(nx+1)+i]],b=[(i+1)*dx,j*dz,values[j*(nx+1)+i+1]],d=[i*dx,(j+1)*dz,values[(j+1)*(nx+1)+i]],e=[(i+1)*dx,(j+1)*dz,values[(j+1)*(nx+1)+i+1]];
+  // Alternate diagonals to make directional contour artefacts less obvious.
+  if((i+j)%2===0){clip([a,b,e]);clip([a,e,d]);}else{clip([a,b,d]);clip([b,e,d]);}
+ }
+ return {verts,boundaries:Array.from(edgeMap.values()),sideArea};
+}
+// Each exported shell is a closed, orientable triangle surface. The two side
+// panels penetrate the curved floor by 0.55mm: slicers merge the overlaps.
+function generate(c,step,preview){
+ const m=[];let estimated=0;
+ function tri(a,b,d,color){
+  let ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],vx=d[0]-a[0],vy=d[1]-a[1],vz=d[2]-a[2];
+  let nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;let l=Math.hypot(nx,ny,nz);if(l<1e-8)return;
+  m.push([a,b,d,[nx/l,ny/l,nz/l],color]);
+ }
+ // The continuous ball-contact floor starts at x=-extension and connects to
+ // the original ramp at x=0. Nodes meet precisely at 0 for a seamless join.
+ const floorSeg=Math.max(65,Math.ceil(c.L/(preview?2:step)));
+ const xNodes=[];
+ if(c.entryExtension>0){
+  const extSeg=Math.max(8,Math.ceil(c.entryExtension/(preview?2:step)));
+  for(let i=0;i<extSeg;i++)xNodes.push(-c.entryExtension+c.entryExtension*i/extSeg);
+ }
+ for(let i=0;i<=floorSeg;i++)xNodes.push(c.L*i/floorSeg);
+ for(let i=0;i<xNodes.length-1;i++){
+  const x0=xNodes[i],x1=xNodes[i+1];
+  const t0=c.floorTop(x0),t1=c.floorTop(x1),b0=c.floorUnder(x0),b1=c.floorUnder(x1);
+  const l0=c.floorLow(x0),l1=c.floorLow(x1),h0=c.floorHigh(x0),h1=c.floorHigh(x1);
+  tri([x0,l0,t0],[x1,l1,t1],[x1,h1,t1],1);tri([x0,l0,t0],[x1,h1,t1],[x0,h0,t0],1);
+  tri([x1,l1,b1],[x0,l0,b0],[x0,h0,b0],1);tri([x1,l1,b1],[x0,h0,b0],[x1,h1,b1],1);
+  tri([x0,l0,b0],[x1,l1,b1],[x1,l1,t1],1);tri([x0,l0,b0],[x1,l1,t1],[x0,l0,t0],1);
+  tri([x1,h1,b1],[x0,h0,b0],[x0,h0,t0],1);tri([x1,h1,b1],[x0,h0,t0],[x1,h1,t1],1);
+ }
+ // Close only the physical leading edge and final exit: x=0 is internal.
+ const xStart=-c.entryExtension,z0=c.floorUnder(xStart),z1=c.floorTop(xStart),ze0=c.floorUnder(c.L),ze1=c.floorTop(c.L);
+ tri([xStart,c.floorLow(xStart),z0],[xStart,c.floorLow(xStart),z1],[xStart,c.floorHigh(xStart),z1],1);
+ tri([xStart,c.floorLow(xStart),z0],[xStart,c.floorHigh(xStart),z1],[xStart,c.floorHigh(xStart),z0],1);
+ tri([c.L,c.floorLow(c.L),ze1],[c.L,c.floorLow(c.L),ze0],[c.L,c.floorHigh(c.L),ze0],1);
+ tri([c.L,c.floorLow(c.L),ze1],[c.L,c.floorHigh(c.L),ze0],[c.L,c.floorHigh(c.L),ze1],1);
+ // Taper the side panels with the floor, preserving fixed-thickness walls.
+ // The mounting column is parallel because lowY/highY stay constant there.
+ const surface=panelTriangles(c,step);
+ for(const side of ['near','far']){
+  const outer=(x)=>side==='near'?c.lowY(x):c.highY(x);
+  const inner=(x)=>side==='near'?c.lowY(x)+c.p.side:c.highY(x)-c.p.side;
+  for(let i=0;i<surface.verts.length;i+=3){
+   const v=surface.verts.slice(i,i+3);
+   const a=[v[0][0],outer(v[0][0]),v[0][1]],b=[v[1][0],outer(v[1][0]),v[1][1]],d=[v[2][0],outer(v[2][0]),v[2][1]];
+   const ai=[v[0][0],inner(v[0][0]),v[0][1]],bi=[v[1][0],inner(v[1][0]),v[1][1]],di=[v[2][0],inner(v[2][0]),v[2][1]];
+   if(side==='near'){tri(a,b,d,0);tri(di,bi,ai,0);}else{tri(d,b,a,0);tri(ai,bi,di,0);}
+  }
+  for(const edge of surface.boundaries){let a=edge[0],b=edge[1];
+   const ao=[a[0],outer(a[0]),a[1]],bo=[b[0],outer(b[0]),b[1]];
+   const ai=[a[0],inner(a[0]),a[1]],bi=[b[0],inner(b[0]),b[1]];
+   if(side==='near'){tri(ao,ai,bi,0);tri(ao,bi,bo,0);}else{tri(ai,ao,bo,0);tri(ai,bo,bi,0);}
+  }
+ }
+ // Signed volume of all shells, including overlap that will be merged by a slicer.
+ let volume=0;for(const t of m){const a=t[0],b=t[1],d=t[2];volume+=(a[0]*(b[1]*d[2]-b[2]*d[1])+a[1]*(b[2]*d[0]-b[0]*d[2])+a[2]*(b[0]*d[1]-b[1]*d[0]))/6;}
+ return {triangles:m,volume:Math.abs(volume),sideArea:surface.sideArea};
+}
+function saveSTL(mesh,name){const faces=mesh.triangles,bytes=84+faces.length*50;const out=new ArrayBuffer(bytes),view=new DataView(out);const header=new TextEncoder().encode('BioBuzz scoop - generated locally in browser - millimeters');new Uint8Array(out,0,header.length).set(header);view.setUint32(80,faces.length,true);let off=84;
+ for(const t of faces){for(let i=0;i<3;i++){view.setFloat32(off,t[3][i],true);off+=4;}for(let k=0;k<3;k++)for(let i=0;i<3;i++){view.setFloat32(off,t[k][i],true);off+=4;}view.setUint16(off,0,true);off+=2;}
+ const url=URL.createObjectURL(new Blob([out],{type:'model/stl'}));const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);return bytes;
+}
+const vertexShader=`attribute vec3 a_position;attribute vec3 a_normal;attribute float a_color;uniform vec3 u_center;uniform float u_yaw;uniform float u_pitch;uniform float u_scale;uniform float u_aspect;varying float v_light;varying float v_color;void main(){vec3 p=a_position-u_center;float cy=cos(u_yaw),sy=sin(u_yaw),cp=cos(u_pitch),sp=sin(u_pitch);vec3 q=vec3(cy*p.x-sy*p.y,sy*p.x+cy*p.y,p.z);vec3 r=vec3(q.x,cp*q.y-sp*q.z,sp*q.y+cp*q.z);gl_Position=vec4(r.x/(u_scale*u_aspect),r.z/u_scale,r.y/(u_scale*3.),1.);vec3 n=a_normal;vec3 light=normalize(vec3(.35,-.58,.72));v_light=.38+.62*abs(dot(n,light));v_color=a_color;}`;
+const fragmentShader=`precision mediump float;varying float v_light;varying float v_color;void main(){vec3 color=mix(vec3(.57,.71,.77),vec3(.20,.82,.75),v_color);gl_FragColor=vec4(color*v_light,1.);}`;
+function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;}
+function initGL(){gl=canvas.getContext('webgl',{antialias:true,alpha:false});if(!gl)throw Error('WebGL unavailable in this browser. STL download still works.');program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vertexShader));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fragmentShader));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('WebGL shader link failed.');gl.useProgram(program);buffer=gl.createBuffer();gl.enable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.clearColor(.055,.11,.17,1);}
+function loadPreview(mesh){if(!gl)return;const out=new Float32Array(mesh.triangles.length*3*7);let i=0;for(const t of mesh.triangles)for(let k=0;k<3;k++){out[i++]=t[k][0];out[i++]=t[k][1];out[i++]=t[k][2];out[i++]=t[3][0];out[i++]=t[3][1];out[i++]=t[3][2];out[i++]=t[4];}gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,out,gl.STATIC_DRAW);vertexCount=mesh.triangles.length*3;for(const [name,size,off] of [['a_position',3,0],['a_normal',3,12],['a_color',1,24]]){let loc=gl.getAttribLocation(program,name);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,size,gl.FLOAT,false,28,off);}render();}
+function render(){if(!current)return;if(!gl){drawFallback(current);return;}let rect=canvas.getBoundingClientRect(),ratio=Math.min(2,devicePixelRatio||1);let cw=Math.max(2,Math.round(rect.width*ratio)),ch=Math.max(2,Math.round(rect.height*ratio));if(canvas.width!==cw||canvas.height!==ch){canvas.width=cw;canvas.height=ch;}gl.viewport(0,0,cw,ch);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);const c=current;const uniforms={u_center:[(c.L-c.entryExtension)/2,c.maxWidth/2,c.H/2],u_yaw:yaw,u_pitch:pitch,u_scale:Math.max(c.H,c.totalLength,c.maxWidth)*.85/zoom,u_aspect:cw/ch};for(let [key,v] of Object.entries(uniforms)){let loc=gl.getUniformLocation(program,key);if(Array.isArray(v))gl.uniform3fv(loc,v);else gl.uniform1f(loc,v);}gl.drawArrays(gl.TRIANGLES,0,vertexCount);}
+function status(msg){$('console').textContent=msg;}
+function refresh(){try{current=buildConfig(read());lastError='';$('download').disabled=false;const c=current;$('actual-size').textContent=`${fmt(c.totalLength)} × ${fmt(c.maxWidth)} × ${fmt(c.H)}`;$('holes').textContent=c.holes.length;$('inner').textContent=`${fmt(c.entryInner)} → ${fmt(c.exitInner)}`;
+ let msg=`Outside width ${fmt(c.W)} → ${fmt(c.Wexit)} mm. Entry extension ${fmt(c.entryExtension)} mm (total length ${fmt(c.totalLength)} mm). Width taper begins after the ${fmt(c.mountDepth)} mm entry column. ${c.holes.length} entry holes per side; no holes downstream. · ${c.windows.length} cutouts per side.`;let warn=c.change.length>0;$('notice').className='notice warn';$('notice').textContent=warn?c.change.join(' '):msg;
+ status('');if(gl){let mesh=generate(c,2.0,true);loadPreview(mesh);}else drawFallback(c);
+ }catch(e){lastError=e.message;$('notice').className='notice err';$('notice').textContent=e.message;$('download').disabled=true;status('Fix dimensions to generate a new STL.');}}
+function drawFallback(c){
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ let cssW=canvas.clientWidth||800,cssH=canvas.clientHeight||460,ratio=Math.min(2,devicePixelRatio||1);
+ canvas.width=Math.round(cssW*ratio);canvas.height=Math.round(cssH*ratio);
+ ctx.setTransform(ratio,0,0,ratio,0,0);const w=cssW,h=cssH;
+ ctx.clearRect(0,0,w,h);
+ // Pure Canvas fallback when hardware WebGL is disabled: perspective-aware
+ // solid drawing, including both side panels, angled windows, and bolt holes.
+ let cy=Math.cos(yaw),sy=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+ function projRaw(x,y,z){x-=(c.L-c.entryExtension)/2;y-=c.maxWidth/2;z-=c.H/2;
+  let xx=cy*x-sy*y,yy=sy*x+cy*y;
+  return [xx,sp*yy+cp*z,cp*yy-sp*z];
+ }
+ let corners=[];for(const x of [-c.entryExtension,c.L])for(const y of [0,c.maxWidth])for(const z of [0,c.H])corners.push(projRaw(x,y,z));
+ const lx=Math.min(...corners.map(p=>p[0])),hx=Math.max(...corners.map(p=>p[0]));
+ const lz=Math.min(...corners.map(p=>p[1])),hz=Math.max(...corners.map(p=>p[1]));
+ const scale=zoom*.85*Math.min((w-100)/(hx-lx||1),(h-100)/(hz-lz||1));
+ function project(x,y,z){let q=projRaw(x,y,z);return [w/2+(q[0]-(lx+hx)/2)*scale,h/2-(q[1]-(lz+hz)/2)*scale];}
+ function trace(points){ctx.beginPath();for(let i=0;i<points.length;i++){let pt=points[i];i?ctx.lineTo(...pt):ctx.moveTo(...pt);}ctx.closePath();}
+ function pathPoly(points,close=true){for(let i=0;i<points.length;i++){let pt=points[i];i?ctx.lineTo(...pt):ctx.moveTo(...pt);}if(close)ctx.closePath();}
+ function wall(side,fill){
+  const at=(x)=>side==='near'?c.lowY(x):c.highY(x);
+  // Outline of each side's planar profile; openings use even-odd winding.
+  let outer=[[0,0],[0,c.H],[c.L,c.H]];
+  for(let i=110;i>=0;i--){let x=c.L*i/110;outer.push([x,Math.max(0,c.zTop(x)-.55)]);}
+  ctx.beginPath();pathPoly(outer.map(([x,z])=>project(x,at(x),z)));
+  for(const win of c.windows){let pts=[];for(let i=0;i<=38;i++){let x=win.lo+(win.hi-win.lo)*i/38;pts.push([x,c.zTop(x)+c.p.bottomRail]);}
+   pts.push([win.hi,win.apex-win.slope*(win.hi-win.mid)],[win.mid,win.apex],[win.lo,win.apex-win.slope*(win.mid-win.lo)]);
+   pathPoly(pts.map(([x,z])=>project(x,at(x),z)));
+  }
+  for(const hole of c.holes){let circle=[];for(let i=0;i<24;i++){let t=2*Math.PI*i/24;{let hx=hole.x+hole.r*Math.cos(t);circle.push(project(hx,at(hx),hole.z+hole.r*Math.sin(t)));};}pathPoly(circle);}
+  ctx.fillStyle=fill;ctx.fill('evenodd');ctx.strokeStyle='#a7c1c9';ctx.lineWidth=1;ctx.stroke();
+ }
+ // Render far side first, then continuous curved ball-contact surface,
+ // then near side. Reverse panel order automatically as the model rotates.
+ const far=cy>=0?'far':'near',near=cy>=0?'near':'far';
+ wall(far,'#477c8c');
+ const segments=120;
+ for(let i=0;i<segments;i++){
+  let x0=-c.entryExtension+c.totalLength*i/segments,x1=-c.entryExtension+c.totalLength*(i+1)/segments;
+  trace([project(x0,c.floorLow(x0),c.floorTop(x0)),project(x1,c.floorLow(x1),c.floorTop(x1)),project(x1,c.floorHigh(x1),c.floorTop(x1)),project(x0,c.floorHigh(x0),c.floorTop(x0))]);
+  ctx.fillStyle=i%2===0?'#3bc6b1':'#39baa9';ctx.fill();
+ }
+ // The floor's front edge is visible when approaching from the low entrance.
+ trace([project(-c.entryExtension,c.floorLow(-c.entryExtension),c.floorUnder(-c.entryExtension)),project(-c.entryExtension,c.floorLow(-c.entryExtension),c.floorTop(-c.entryExtension)),project(-c.entryExtension,c.floorHigh(-c.entryExtension),c.floorTop(-c.entryExtension)),project(-c.entryExtension,c.floorHigh(-c.entryExtension),c.floorUnder(-c.entryExtension))]);ctx.fillStyle='#1b8079';ctx.fill();
+ wall(near,'#6b98a5');
+ for(const edge of ['near','far']){ctx.beginPath();for(let i=0;i<=100;i++){let x=c.L*i/100,pt=project(x,edge==='near'?c.lowY(x):c.highY(x),c.zTop(x));i?ctx.lineTo(...pt):ctx.moveTo(...pt);}ctx.strokeStyle='#78ebd7';ctx.lineWidth=2;ctx.stroke();}
+}
+$('download').addEventListener('click',()=>{try{const c=buildConfig(read());$('download').disabled=true;status('Generating precision STL mesh…');setTimeout(()=>{try{const mesh=generate(c,c.v.step,false);const name=`BioBuzz_scoop_${fmt(c.W).replace('.','p')}entry_${fmt(c.Wexit).replace('.','p')}exit_${fmt(c.L).replace('.','p')}main_${fmt(c.entryExtension).replace('.','p')}extension_${fmt(c.H).replace('.','p')}h_${c.v.angle}deg_${c.v.preset}.stl`;const bytes=saveSTL(mesh,name);status(`Downloaded ${name} · ${mesh.triangles.length.toLocaleString()} triangles · ${(bytes/1048576).toFixed(1)} MB. Open in your slicer and preview the layers.`);}catch(e){status(`Export failed: ${e.message}`);}finally{$('download').disabled=false;}},25);}catch(e){status(e.message);$('download').disabled=false;}});
+// Portable JSON project format: exact user-entered configuration, not the
+// derived geometry. This includes preset, fit behavior and STL quality.
+const SETTINGS_FORMAT='biobuzz-scoop-settings';
+const SETTINGS_SCHEMA_VERSION=1;
+const NUMERIC_SETTINGS=['width','exitWidth','length','height','angle','entryExtension','entry','step','ball','hole','mountDepth','pitch','edge'];
+const SELECT_SETTINGS=['preset','fit'];
+const ALL_SETTINGS=[...NUMERIC_SETTINGS,...SELECT_SETTINGS];
+const SETTINGS_TO_CONTROL={step:'quality'};
+function controlForSetting(key){return $(SETTINGS_TO_CONTROL[key]||key);}
+function settingsMessage(text,isError=false){const el=$('settingsStatus');el.textContent=text;el.classList.toggle('error',isError);}
+function serializeSettings(){
+ const settings=read();
+ // Prevent saving invalid configurations that another user cannot generate.
+ buildConfig(settings);
+ return {
+  format:SETTINGS_FORMAT,
+  schemaVersion:SETTINGS_SCHEMA_VERSION,
+  generatorVersion:'5.0',
+  units:'mm',
+  exportedAt:new Date().toISOString(),
+  settings
+ };
+}
+function downloadFile(blob,fileName){
+ const url=URL.createObjectURL(blob);
+ const link=document.createElement('a');link.href=url;link.download=fileName;
+ document.body.appendChild(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+$('exportSettings').addEventListener('click',()=>{
+ try{
+  const doc=serializeSettings();const s=doc.settings;
+  const stamp=`${fmt(s.width).replace('.','p')}to${fmt(s.exitWidth).replace('.','p')}mm_${fmt(s.angle).replace('.','p')}deg`;
+  const name=`BioBuzz_Settings_${stamp}.json`;
+  downloadFile(new Blob([JSON.stringify(doc,null,2)+'\n'],{type:'application/json'}),name);
+  settingsMessage(`Exported ${name}. Share this file to reproduce all ${ALL_SETTINGS.length} settings.`);
+ }catch(error){settingsMessage(`Cannot export: ${error.message}`,true);}
+});
+function validatedImportedSettings(doc){
+ if(!doc||typeof doc!=='object'||Array.isArray(doc))throw Error('The file must contain a JSON settings object.');
+ if(doc.format!==SETTINGS_FORMAT)throw Error('Not a BioBuzz settings file (unrecognized format).');
+ if(doc.schemaVersion!==SETTINGS_SCHEMA_VERSION)throw Error(`Unsupported settings version ${String(doc.schemaVersion)}. Expected version ${SETTINGS_SCHEMA_VERSION}.`);
+ const s=doc.settings;
+ if(!s||typeof s!=='object'||Array.isArray(s))throw Error('Missing settings object.');
+ // Apply only known fields, with no dynamic object merging or arbitrary keys.
+ const candidate={};
+ for(const key of ALL_SETTINGS){
+  if(!Object.prototype.hasOwnProperty.call(s,key))throw Error(`Missing setting: ${key}.`);
+  const val=s[key],control=controlForSetting(key);
+  if(NUMERIC_SETTINGS.includes(key)){
+   if(typeof val!=='number'||!Number.isFinite(val))throw Error(`Invalid numeric setting: ${key}.`);
+   const min=control.min===''?-Infinity:Number(control.min),max=control.max===''?Infinity:Number(control.max);
+   if(val<min||val>max)throw Error(`${key} must be within the allowed range (${Number.isFinite(min)?min:'any'}–${Number.isFinite(max)?max:'any'}).`);
+   if(key==='step'&&!Array.from(control.options).some(option=>Number(option.value)===val))throw Error('Unknown STL quality preset.');
+  }else{
+   if(typeof val!=='string'||!Array.from(control.options).some(option=>option.value===val))throw Error(`Invalid option: ${key}.`);
+  }
+  candidate[key]=val;
+ }
+ return candidate;
+}
+function applyImportedSettings(candidate){
+ // All fields are validated together; restore the previous state if the
+ // geometrical constraints reject the imported combination.
+ const before=Object.fromEntries(ALL_SETTINGS.map(key=>[key,controlForSetting(key).value]));
+ try{
+  for(const key of ALL_SETTINGS)controlForSetting(key).value=String(candidate[key]);
+  buildConfig(read());
+  clearTimeout(debounce);
+  refresh();
+ }catch(error){
+  for(const key of ALL_SETTINGS)controlForSetting(key).value=before[key];
+  refresh();
+  throw error;
+ }
+}
+$('importSettings').addEventListener('click',()=>{$('settingsFile').click();});
+$('settingsFile').addEventListener('change',async()=>{
+ const file=$('settingsFile').files?.[0];
+ if(!file)return;
+ try{
+  if(file.size>1024*1024)throw Error('Settings files must be under 1 MB.');
+  const doc=JSON.parse(await file.text());
+  const candidate=validatedImportedSettings(doc);
+  applyImportedSettings(candidate);
+  settingsMessage(`Imported ${file.name}. Restored all ${ALL_SETTINGS.length} settings and updated the 3D preview.`);
+ }catch(error){settingsMessage(`Import failed: ${error.message}`,true);}
+ finally{$('settingsFile').value='';}
+});
+
+for(let id of ids){$(id).addEventListener('input',()=>{clearTimeout(debounce);debounce=setTimeout(refresh,160);});}
+let dragging=false,lastX=0,lastY=0;canvas.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);canvas.addEventListener('pointermove',e=>{if(!dragging)return;yaw+=(e.clientX-lastX)*.008;pitch=Math.min(1.4,Math.max(-1.4,pitch+(e.clientY-lastY)*.006));lastX=e.clientX;lastY=e.clientY;render()});canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.min(2.4,Math.max(.4,zoom*Math.exp(-e.deltaY*.001)));render()},{passive:false});window.addEventListener('resize',render);
+try{initGL()}catch(e){status('3D preview unavailable: '+e.message);}refresh();
+})();
+</script>
+</body>
+</html>

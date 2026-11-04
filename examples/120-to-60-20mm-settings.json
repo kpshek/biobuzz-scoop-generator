@@ -1,0 +1,22 @@
+{
+  "format": "biobuzz-scoop-settings",
+  "schemaVersion": 1,
+  "units": "mm",
+  "settings": {
+    "width": 120,
+    "exitWidth": 60,
+    "length": 120,
+    "height": 150,
+    "angle": 65,
+    "preset": "light",
+    "fit": "exact",
+    "entry": 25,
+    "entryExtension": 20,
+    "step": 0.85,
+    "ball": 71,
+    "hole": 4.6,
+    "mountDepth": 34,
+    "pitch": 8,
+    "edge": 8
+  }
+}

@@ -1,0 +1,15 @@
+# Generated meshes and personal configurations
+*.stl
+local-settings/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.tmp
+
+# Optional local tooling
+node_modules/
