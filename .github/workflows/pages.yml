@@ -35,6 +35,7 @@ jobs:
         run: |
           mkdir -p _site
           cp BioBuzz_Scoop_Generator.html _site/index.html
+          cp BioBuzz_Scoop_Generator.html BioBuzz-Fin-Studio.html FTC-Alliance-Plate.html _site/
           cp -R examples _site/examples
 
       - name: Configure Pages

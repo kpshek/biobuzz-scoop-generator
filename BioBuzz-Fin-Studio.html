@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Generate a four-fin rotor for the goBILDA BioBuzz robot and export a printable STL.">
+<title>BioBuzz Part Studio · Four-fin rotor</title>
+<style>
+:root{color-scheme:light;--ink:#122b35;--muted:#4d6570;--line:#d5e0df;--paper:#f4f7f5;--card:#fff;--teal:#075e59;--mint:#dcf4e9;--dark:#101e28;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.48 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.52;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,canvas:focus-visible{outline:2px solid #149684;outline-offset:3px}
+a{color:var(--teal);text-underline-offset:3px}
+.top{border-bottom:1px solid var(--line);background:#fff}
+.top-inner,main{width:min(1280px,calc(100% - 64px));margin:auto}
+.top-inner{height:66px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:750;letter-spacing:-.01em}
+.brand-mark{width:34px;height:34px;display:grid;place-items:center;background:var(--teal);border-radius:9px;color:white}
+.brand-mark svg{width:22px;height:22px}
+.generator-nav{display:flex;align-items:center;gap:6px}
+.generator-nav a{border-radius:7px;padding:6px 9px;text-decoration:none;font-weight:650;font-size:13px;white-space:nowrap}
+.generator-nav a:hover{background:#edf4f2}
+.generator-nav a[aria-current]{background:var(--mint)}
+.badge,.eyebrow,.unit,.metric-label,.axis-note{font:700 11px/1.35 var(--mono);letter-spacing:.075em;text-transform:uppercase}
+.badge{color:var(--teal);background:var(--mint);border:1px solid #c9e9dc;border-radius:99px;padding:6px 10px;white-space:nowrap}
+main{padding:32px 0 24px}
+.eyebrow{margin:0 0 8px;color:var(--teal)}
+h1{font-size:clamp(38px,4.3vw,61px);line-height:1.04;letter-spacing:-.062em;margin:0;font-weight:760}
+.intro{margin:12px 0 25px;color:var(--muted);font-size:15px}
+.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(320px,1fr);gap:20px;align-items:start}
+.card{border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+.preview{background:var(--dark);color:#eaf6f7;border-color:#263c45}
+.preview-head{padding:14px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b424b}
+h2{font-size:17px;letter-spacing:-.025em;line-height:1.2;margin:0}
+.preview-title{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:#65dfbc;box-shadow:0 0 10px #65dfbc80}
+.view-buttons,.zoom-buttons{display:flex;gap:4px}
+.view-buttons button,.zoom-buttons button{border:1px solid #39545f;background:#192d37;color:#d5e9ed;border-radius:7px;padding:5px 9px;font-size:12px;min-height:30px}
+.view-buttons button[aria-pressed=true]{background:#245451;border-color:#568982;color:#f0fffa}
+.view-buttons button:hover,.zoom-buttons button:hover{background:#325661}
+.stage{position:relative;height:clamp(340px,47vw,534px);background:radial-gradient(ellipse at 50% 42%,#203942 0,#14262e 57%,#101d26 100%);isolation:isolate}
+#viewport,canvas{position:absolute;inset:0;width:100%;height:100%}
+canvas{display:block;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+canvas:focus-visible{outline-offset:-4px}
+.stage-meta{position:absolute;top:15px;left:16px;color:#b9d2d8;pointer-events:none}
+.stage-meta .axis-note{display:block}
+.stage-meta .sub{font:11px/1.4 var(--mono);color:#a5bac3}
+.stage-foot{position:absolute;bottom:12px;left:15px;right:15px;display:flex;justify-content:space-between;align-items:end;gap:12px;pointer-events:none}
+.stage-foot p{margin:0 0 4px;color:#bdd0d6;font-size:12px}
+.zoom-buttons{pointer-events:auto}
+.zoom-buttons button{min-width:31px;font-size:16px;line-height:1}
+.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;margin:0;border-top:1px solid #2b424b;background:#142630}
+.metrics div{padding:12px 14px}
+.metrics div+div{border-left:1px solid #2b424b}
+.metric-label{color:#b5cbd2;letter-spacing:.045em;font-size:10px}
+.metrics dd{font:650 15px/1.35 var(--mono);margin:5px 0 0;white-space:nowrap}
+.config{padding:20px 21px}
+.config-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:18px}
+.reset{background:none;border:0;color:var(--teal);font-size:13px;font-weight:650;padding:5px 0}
+.reset:hover{text-decoration:underline}
+.control+.control{margin-top:15px}
+.control-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.control label{font-weight:700}
+.check{display:flex;align-items:center;gap:8px}
+.check input{width:17px;height:17px;margin:0;accent-color:var(--teal)}
+.control select{border:1px solid #c5d6d5;border-radius:7px;padding:5px 8px;background:#fcfefd;color:var(--ink);font-size:13px}
+.control:has(input:disabled){opacity:.6}
+.control input:disabled{cursor:default}
+.control small{display:block;color:var(--muted);font-size:12px;margin:3px 0 4px}
+.num{display:flex;align-items:center;gap:5px;border:1px solid #c5d6d5;border-radius:7px;padding:2px 8px;background:#fcfefd}
+.num input{width:65px;padding:4px 0;color:var(--ink);border:0;background:transparent;font:700 15px/1.3 var(--mono)}
+.num:has(input:invalid){border-color:#b43737}
+.unit{color:#4e656b;letter-spacing:0}
+input[type=range]{width:100%;height:19px;accent-color:var(--teal);margin:4px 0 0;display:block;cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;color:var(--muted);font:11px/1.3 var(--mono)}
+#validation{font-size:12px;color:#9e2424;margin:8px 0 0}
+.mount{background:#f2f7f6;border:1px solid #dde9e6;border-radius:10px;padding:12px 13px;margin:17px 0 15px}
+.mount h3{font-size:13px;margin:0 0 7px;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.mount h3 span{font:11px/1.3 var(--mono);color:var(--teal)}
+.mount dl{margin:0}
+.mount dl div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:12px}
+.mount dl div+div{margin-top:4px}
+.mount dt{color:var(--muted)}
+.mount dd{margin:0;text-align:right;font:600 11px/1.35 var(--mono)}
+.export{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:45px;border:1px solid var(--teal);border-radius:8px;background:var(--teal);color:#fff;font-weight:740}
+.export:hover:enabled{background:#064a47}
+.export svg{width:17px;height:17px}
+.export-note{margin:7px 0 0;color:var(--muted);font-size:12px;text-align:center;min-height:1.5em}
+.notes{margin-top:17px;padding:15px 17px;display:flex;justify-content:space-between;align-items:start;gap:18px;font-size:13px;color:var(--muted)}
+.notes h2{font-size:14px;color:var(--ink);margin-bottom:4px}
+.notes p{margin:0;max-width:78ch}
+.sources{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px;white-space:nowrap;font-size:12px}
+footer{margin:13px 0 0;color:var(--muted);font:11px/1.35 var(--mono)}
+@media(max-width:890px){.top-inner,main{width:calc(100% - 36px)}.layout{grid-template-columns:1fr;gap:15px}.stage{height:clamp(325px,62vw,510px)}.notes{flex-direction:column;gap:7px}.intro{margin-bottom:19px}}
+@media(max-width:480px){.top-inner,main{width:calc(100% - 24px)}.top-inner{height:55px}.badge{font-size:9px}.config{padding:17px}.preview-head{padding:12px}.metrics div{padding:10px 7px}.metrics dd{font-size:12px}.metric-label{font-size:9px}.stage-foot p{font-size:11px}main{padding-top:24px}}
+@media(max-width:480px){.top-inner{height:auto;min-height:55px;flex-wrap:wrap;padding:10px 0}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h12M16 8v12M16 16H4M8 16V4"/><circle cx="12" cy="12" r="1"/></svg></span>BioBuzz Part Studio</div>
+    <nav class="generator-nav" aria-label="Generators">
+      <a href="BioBuzz_Scoop_Generator.html">Scoop</a>
+      <a href="BioBuzz-Fin-Studio.html" aria-current="page">Fins</a>
+      <a href="FTC-Alliance-Plate.html">Alliance plates</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <p class="eyebrow">goBILDA BioBuzz · Step 53</p>
+  <h1>Four-fin rotor</h1>
+  <p class="intro">Print the full pinwheel or a smaller part to check the fit. Set the fin count and dimensions, then export the model for your slicer.</p>
+  <div class="layout">
+    <section class="card preview" aria-labelledby="preview-heading">
+      <div class="preview-head">
+        <h2 class="preview-title" id="preview-heading"><span class="dot"></span>3D preview</h2>
+        <div class="view-buttons" role="group" aria-label="Preset views">
+          <button type="button" data-view="iso" aria-pressed="true">Iso</button>
+          <button type="button" data-view="top" aria-pressed="false">Top</button>
+          <button type="button" data-view="side" aria-pressed="false">Side</button>
+        </div>
+      </div>
+      <div class="stage">
+        <div id="viewport"></div>
+        <div class="stage-meta"><span class="axis-note" id="view-label">Isometric</span><span class="sub">Grid / 10 mm</span></div>
+        <div class="stage-foot">
+          <p>Drag to orbit · Scroll to zoom</p>
+          <div class="zoom-buttons" role="group" aria-label="Zoom">
+            <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+            <button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+      </div>
+      <dl class="metrics" aria-label="Generated dimensions">
+        <div><dt class="metric-label">Footprint</dt><dd id="footprint"></dd></div>
+        <div><dt class="metric-label">Sweep Ø</dt><dd id="sweep"></dd></div>
+        <div><dt class="metric-label">Overall height</dt><dd id="overall"></dd></div>
+      </dl>
+    </section>
+    <section class="card config" aria-labelledby="config-heading">
+      <div class="config-head"><h2 id="config-heading">Fin setup</h2><button class="reset" type="button" id="reset">Reset settings</button></div>
+      <div class="control">
+        <div class="control-top">
+          <label for="fin-count">Fin count</label>
+          <select id="fin-count" aria-describedby="count-help">
+            <option value="0">0 · Mount only</option>
+            <option value="1">1 · Single fin</option>
+            <option value="2">2 · Adjacent fins</option>
+            <option value="3">3 · Adjacent fins</option>
+            <option value="4" selected>4 · Full rotor</option>
+          </select>
+        </div>
+        <small id="count-help">Every count includes the full square mount and all eight screw holes.</small>
+      </div>
+      <div class="control">
+        <div class="control-top">
+          <label for="length">Fin length</label>
+          <div class="num"><input id="length" type="number" min="5" max="120" step="0.1" value="55" required aria-describedby="length-help"><span class="unit">mm</span></div>
+        </div>
+        <small id="length-help">Extension past the inside corner to the fin tip.</small>
+        <input id="length-slider" type="range" min="5" max="120" step="0.1" value="55" aria-label="Fin length in millimeters">
+        <div class="range-labels" aria-hidden="true"><span>5 mm</span><span>120 mm</span></div>
+      </div>
+      <div class="control">
+        <div class="control-top">
+          <label for="height">Fin and mount height</label>
+          <div class="num"><input id="height" type="number" min="10" max="80" step="0.1" value="40" required aria-describedby="height-help"><span class="unit">mm</span></div>
+        </div>
+        <small id="height-help">Sets the height of the entire square mount and any fins.</small>
+        <input id="height-slider" type="range" min="10" max="80" step="0.1" value="40" aria-label="Fin and mount height in millimeters">
+        <div class="range-labels" aria-hidden="true"><span>10 mm</span><span>80 mm</span></div>
+      </div>
+      <div class="control">
+        <div class="control-top">
+          <label for="thickness">Fin thickness</label>
+          <div class="num"><input id="thickness" type="number" min="1.5" max="6" step="0.1" value="2" required aria-describedby="thickness-help"><span class="unit">mm</span></div>
+        </div>
+        <small id="thickness-help">The blades taper to the 2 mm mounting wall at their roots.</small>
+      </div>
+      <div class="control">
+        <div class="check">
+          <input id="rounded-roots" type="checkbox" aria-describedby="rounded-roots-help">
+          <label for="rounded-roots">Rounded roots</label>
+        </div>
+        <small id="rounded-roots-help">Adds a 1.5 mm-radius curve where each fin meets the mount.</small>
+      </div>
+      <div class="control">
+        <div class="control-top">
+          <label for="cut-length">Tip cut length</label>
+          <div class="num"><input id="cut-length" type="number" min="0" step="0.1" value="0" required aria-describedby="cut-length-help"><span class="unit">mm</span></div>
+        </div>
+        <small id="cut-length-help">Distance back from the tip along the top edge. Set to 0 for a square corner.</small>
+      </div>
+      <div class="control">
+        <div class="control-top">
+          <label for="cut-angle">Tip cut angle</label>
+          <div class="num"><input id="cut-angle" type="number" min="1" max="89" step="0.1" value="45" required aria-describedby="cut-angle-help"><span class="unit">°</span></div>
+        </div>
+        <small id="cut-angle-help">Angle down from the top edge toward the tip.</small>
+      </div>
+      <p id="validation" role="status" hidden></p>
+      <div class="mount">
+        <h3>Mount interface <span>1201-0043-0002</span></h3>
+        <dl>
+          <div><dt>Metal mount / fit clearance</dt><dd>43 mm / 0.2 mm per side</dd></div>
+          <div><dt>Mounting holes</dt><dd>8 × Ø4.4 mm for M4</dd></div>
+          <div><dt>Hole spacing per side</dt><dd>32 mm on center</dd></div>
+          <div><dt>Printed wall / hole center below top</dt><dd>2.0 / 4.0 mm</dd></div>
+        </dl>
+      </div>
+      <button class="export" type="button" id="export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>Download STL</button>
+      <p class="export-note" id="export-note" aria-live="polite">Binary STL · Model units are millimeters</p>
+    </section>
+  </div>
+  <section class="card notes" aria-labelledby="fit-heading">
+    <div>
+      <h2 id="fit-heading">Fit and assembly</h2>
+      <p>For assembly, slide the square opening over the metal mount from the post side with the screw holes nearest the servo. Check screw engagement with the Step 53 washers and confirm clearance through a full rotation before running the servo.</p>
+    </div>
+    <div class="sources">
+      <a href="https://www.gobilda.com/1201-series-quad-block-pattern-mount-43-2/" target="_blank" rel="noopener">Mount drawing ↗</a>
+      <a href="https://www.gobilda.com/content/user_manuals/3200-2627-0004_assembly-instructions.min.pdf#page=32" target="_blank" rel="noopener">Step 53 ↗</a>
+    </div>
+  </section>
+  <footer>Design defaults · 4 fins · 55 mm extension × 40 mm height × 2 mm thickness</footer>
+</main>
+<script id="geometry">
+"use strict";
+const mount = Object.freeze({ halfOpening:21.7, wall:2, holeOffset:16, holeZ:4, holeRadius:2.2 });
+const rootRadius = 1.5;
+const defaults = Object.freeze({length:55, height:40});
+const minus = (a,b) => a.map((value,i) => value-b[i]);
+const dot = (a,b) => a.reduce((sum,value,i) => sum+value*b[i],0);
+const cross = (a,b) => [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const unit = v => {
+  const length = Math.hypot(...v);
+  return v.map(value => value/length);
+};
+const normal = ([a,b,c]) => unit(cross(minus(b,a),minus(c,a)));
+const pointKey = p => p.map(x => Math.round(x*1e6)).join(",");
+const turn = (a,b,c) => (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+const cutSlope = degrees => Math.tan(degrees*Math.PI/180);
+
+// Each ring sector has a single outer edge so its neighbors share whole edges.
+function triangulateSector(polygon) {
+  const points = polygon.slice();
+  const result = [];
+  while (points.length > 3) {
+    const index = points.findIndex((b,i) => {
+      const a = points[(i+points.length-1)%points.length];
+      const c = points[(i+1)%points.length];
+      if (turn(a,b,c) <= 1e-9) return false;
+      return !points.some(p => p!==a && p!==b && p!==c &&
+        turn(a,b,p)>=-1e-9 && turn(b,c,p)>=-1e-9 && turn(c,a,p)>=-1e-9);
+    });
+    if (index < 0) throw new Error("Could not triangulate the mounting hole.");
+    result.push([points[(index+points.length-1)%points.length],points[index],points[(index+1)%points.length]]);
+    points.splice(index,1);
+  }
+  result.push(points);
+  return result;
+}
+
+function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet}) {
+  const {halfOpening:a,wall,holeOffset,holeZ,holeRadius} = mount;
+  const b = a+wall;
+  const triangles = [];
+  const add = (vertices,reverse=false) => triangles.push(reverse ? [vertices[0],vertices[2],vertices[1]] : vertices);
+  const quad = (p,q,r,s,reverse=false) => {
+    add([p,q,r],reverse);
+    add([p,r,s],reverse);
+  };
+  const boundaries = receiveFillet ? [-a,-a+rootRadius,0,a,b] : [-a,0,a,b];
+  const onWall = (p,v) => [p[0],v,p[1]];
+
+  for (let i=0;i<boundaries.length-1;i++) {
+    const u0=boundaries[i], u1=boundaries[i+1];
+    quad([u0,a,0],[u1,a,0],[u1,b,0],[u0,b,0],true);
+    quad([u0,a,top],[u1,a,top],[u1,b,top],[u0,b,top]);
+
+    const corners = [[u0,0],[u1,0],[u1,top],[u0,top]];
+    if (u1===0 || u0===0) {
+      const center = u1===0 ? -holeOffset : holeOffset;
+      const angles = corners.map(([u,z]) => Math.atan2(z-holeZ,u-center));
+      const onHole = theta => [center+holeRadius*Math.cos(theta),holeZ+holeRadius*Math.sin(theta)];
+      const endpoints = angles.map(onHole);
+
+      for (let j=0;j<4;j++) {
+        const next = (j+1)%4;
+        const arc = (angles[next]-angles[j]+2*Math.PI)%(2*Math.PI);
+        const segments = Math.ceil(arc/(Math.PI/32));
+        const rim = [endpoints[j]];
+        for (let n=1;n<segments;n++) rim.push(onHole(angles[j]+arc*n/segments));
+        rim.push(endpoints[next]);
+
+        const panel = [corners[j],corners[next],...rim.slice().reverse()];
+        for (const face of triangulateSector(panel)) {
+          add(face.map(p => onWall(p,a)));
+          add(face.map(p => onWall(p,b)),true);
+        }
+        for (let n=0;n<rim.length-1;n++) {
+          quad(onWall(rim[n],a),onWall(rim[n+1],a),onWall(rim[n+1],b),onWall(rim[n],b));
+        }
+      }
+    } else if (u0===a) {
+      // The previous panel fills the inside corner.
+      quad(...corners.map(p => onWall(p,b)),true);
+    } else {
+      // The adjacent fillet fills the outer face of this strip.
+      quad(...corners.map(p => onWall(p,a)));
+    }
+  }
+
+  if (tip>b) {
+    const taperSpan = Math.min(8,(tip-b)/2);
+    const cutStart = tip-cutLength;
+    const stations = [b,tip];
+    if (thickness!==wall) stations.push(b+taperSpan);
+    if (cutLength>0) stations.push(cutStart);
+    if (roundRoot) {
+      for (let i=1;i<=12;i++) stations.push(b+rootRadius*(1-Math.cos(i*Math.PI/24)));
+    }
+    stations.sort((x,y) => x-y);
+    const sections = stations.filter((u,i) => i===0 || u-stations[i-1]>1e-9);
+    // Split at the fillet, taper and cut boundaries so each face stays planar.
+    const inner = u => {
+      const distance = u-b;
+      if (!roundRoot || distance>=rootRadius) return a;
+      return a-rootRadius+Math.sqrt(distance*(2*rootRadius-distance));
+    };
+    const outer = u => b+(thickness-wall)*Math.min(1,(u-b)/taperSpan);
+    // The pre-flip bottom edge becomes the top edge of the exported fin.
+    const lower = u => u<=cutStart ? 0 : cutDepth*(1-(tip-u)/cutLength);
+    for (let i=0;i<sections.length-1;i++) {
+      const u0=sections[i], u1=sections[i+1];
+      const inner0=inner(u0), inner1=inner(u1);
+      const v0=outer(u0), v1=outer(u1);
+      const z0=lower(u0), z1=lower(u1);
+      for (const [leftZ,rightZ,reverse] of [[z0,z1,true],[top,top,false]]) {
+        const p=[u0,inner0,leftZ], q=[u1,inner1,rightZ];
+        const r=[u1,v1,rightZ], s=[u0,v0,leftZ];
+        if (roundRoot && i===0) {
+          // At the root, the original corner splits the join across two panels.
+          const corner=[u0,a,leftZ];
+          quad(p,q,r,corner,reverse);
+          add([corner,r,s],reverse);
+        } else {
+          quad(p,q,r,s,reverse);
+        }
+      }
+      quad([u0,inner0,z0],[u1,inner1,z1],[u1,inner1,top],[u0,inner0,top]);
+      quad([u0,v0,z0],[u1,v1,z1],[u1,v1,top],[u0,v0,top],true);
+    }
+  }
+  const tipOuter = b+(thickness-wall);
+  quad([tip,a,cutDepth],[tip,tipOuter,cutDepth],[tip,tipOuter,top],[tip,a,top]);
+  return triangles;
+}
+
+function makeRotor(length,height,finCount=4,cutLength=0,cutAngle=45,thickness=mount.wall,roundedRoots=false) {
+  const {halfOpening:a,wall} = mount;
+  const b = a+wall;
+  const tip = finCount===0 ? b : a+length;
+  const cutDepth = cutLength ? cutLength*cutSlope(cutAngle) : 0;
+  const rotations = [
+    ([x,y,z]) => [x,y,z],
+    ([x,y,z]) => [-y,x,z],
+    ([x,y,z]) => [-x,-y,z],
+    ([x,y,z]) => [y,-x,z]
+  ];
+  const faces = rotations.flatMap((rotate,index) => {
+    const hasFin = index<finCount;
+    const roundRoot = roundedRoots && hasFin;
+    const receiveFillet = roundedRoots && (index+1)%rotations.length<finCount;
+    const panel = hasFin
+      ? makePanel(tip,height,cutLength,cutDepth,thickness,{roundRoot,receiveFillet})
+      : makePanel(b,height,0,0,wall,{roundRoot,receiveFillet});
+    return panel.map(triangle => triangle.map(point => {
+      const [x,y,z] = rotate(point);
+      // Flip about X and return the bottom to Z=0.
+      return [x,-y,height-z];
+    }));
+  });
+  const points = faces.flat();
+  const bounds = [0,1].map(axis => {
+    const values = points.map(p => p[axis]);
+    return [Math.min(...values),Math.max(...values)];
+  });
+  const footprint = bounds.map(([low,high]) => high-low);
+  const center = [...bounds.map(([low,high]) => (low+high)/2),height/2];
+  const radius = Math.max(...points.map(p => Math.hypot(...minus(p,center))));
+  const sweep = 2*Math.max(...points.map(([x,y]) => Math.hypot(x,y)));
+  return {faces, footprint, center, radius, sweep, height};
+}
+
+function makeBinarySTL(faces) {
+  const bytes = new ArrayBuffer(84+50*faces.length);
+  const data = new DataView(bytes);
+  new Uint8Array(bytes).set(new TextEncoder().encode("BioBuzz Fin Studio | millimeters"));
+  data.setUint32(80,faces.length,true);
+  let offset=84;
+  for (const face of faces) {
+    for (const number of [...normal(face),...face.flat()]) {
+      data.setFloat32(offset,number,true);
+      offset+=4;
+    }
+    data.setUint16(offset,0,true);
+    offset+=2;
+  }
+  return bytes;
+}
+</script>
+<script>
+"use strict";
+const el = id => document.getElementById(id);
+const viewport = el("viewport");
+const canvas = document.createElement("canvas");
+canvas.tabIndex = 0;
+canvas.setAttribute("aria-label","BioBuzz part preview. Use arrow keys to orbit, plus and minus to zoom, or Home for the isometric view.");
+viewport.append(canvas);
+
+const presets = {
+  iso: {azimuth:-1.04,elevation:.68,label:"Isometric"},
+  top: {azimuth:-Math.PI/2,elevation:Math.PI/2,label:"Top · XY"},
+  side: {azimuth:Math.PI/2,elevation:0,label:"Side · XZ"}
+};
+let azimuth, elevation, zoom, model, grid, edges, frame;
+const backgroundColor = [0.19,0.32,0.37];
+const partColor = [0.28,0.83,0.75];
+const edgeColor = [0.055,0.20,0.22];
+const light = unit([-.45,-.55,1]);
+
+function getEdges(faces) {
+  const pairs = new Map();
+  for (const face of faces) {
+    const n = normal(face);
+    for (let i=0;i<3;i++) {
+      const p = face[i], q = face[(i+1)%3];
+      const key = [pointKey(p),pointKey(q)].sort().join("|");
+      const previous = pairs.get(key);
+      if (previous) previous.visible = dot(previous.normal,n) < 0.96;
+      else pairs.set(key,{p,q,normal:n,visible:true});
+    }
+  }
+  return [...pairs.values()].filter(edge => edge.visible).map(({p,q}) => [p,q]);
+}
+
+function makeGrid({center,radius}) {
+  const end = Math.ceil((radius*1.8+Math.hypot(center[0],center[1]))/10)*10;
+  const lines = [];
+  for (let i=-end;i<=end;i+=10) {
+    lines.push([[-end,i,-.2],[end,i,-.2]],[[i,-end,-.2],[i,end,-.2]]);
+  }
+  return lines;
+}
+
+function webGLRenderer(gl) {
+  const vertexSource = `
+    attribute vec3 aPoint, aNormal;
+    uniform vec3 uRight, uUp, uEye, uColor, uLight, uCenter;
+    uniform vec2 uScale;
+    uniform float uDepth, uShaded;
+    varying vec3 vColor;
+    void main() {
+      vec3 point = aPoint - uCenter;
+      gl_Position = vec4(dot(point, uRight)*uScale.x, dot(point, uUp)*uScale.y,
+                         -dot(point, uEye)*uDepth, 1.0);
+      float shade = 0.63 + 0.36*max(0.0, dot(aNormal, uLight))
+                         + 0.07*max(0.0, dot(aNormal, uEye));
+      vColor = uColor * mix(1.0, shade, uShaded);
+    }`;
+  const fragmentSource = `
+    precision mediump float;
+    varying vec3 vColor;
+    void main() { gl_FragColor = vec4(vColor, 1.0); }`;
+  const program = gl.createProgram();
+  for (const [type,source] of [[gl.VERTEX_SHADER,vertexSource],[gl.FRAGMENT_SHADER,fragmentSource]]) {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader,source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+    gl.attachShader(program,shader);
+  }
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
+  gl.useProgram(program);
+  const location = name => gl.getUniformLocation(program,name);
+  const right=location("uRight"), up=location("uUp"), eye=location("uEye"), scale=location("uScale");
+  const center=location("uCenter"), depth=location("uDepth"), shaded=location("uShaded"), color=location("uColor");
+  const position = gl.getAttribLocation(program,"aPoint");
+  const direction = gl.getAttribLocation(program,"aNormal");
+  const surfaceBuffer = gl.createBuffer(), edgeBuffer = gl.createBuffer(), gridBuffer = gl.createBuffer();
+  gl.uniform3fv(location("uLight"),light);
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+  gl.clearColor(0,0,0,0);
+
+  function upload(buffer,vertices) {
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vertices),gl.STATIC_DRAW);
+  }
+  function drawLines(buffer,count,rgb) {
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+    gl.vertexAttribPointer(position,3,gl.FLOAT,false,0,0);
+    gl.disableVertexAttribArray(direction);
+    gl.vertexAttrib3f(direction,0,0,0);
+    gl.uniform1f(shaded,0);
+    gl.uniform3fv(color,rgb);
+    gl.drawArrays(gl.LINES,0,count);
+  }
+  return {
+    update() {
+      upload(surfaceBuffer,model.faces.flatMap(face => {
+        const n = normal(face);
+        return face.flatMap(p => [...p,...n]);
+      }));
+      upload(edgeBuffer,edges.flat(2));
+      upload(gridBuffer,grid.flat(2));
+    },
+    draw(view) {
+      gl.viewport(0,0,canvas.width,canvas.height);
+      gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+      gl.uniform3fv(right,view.right);
+      gl.uniform3fv(up,view.up);
+      gl.uniform3fv(eye,view.eye);
+      gl.uniform2f(scale,2*view.pixels/canvas.width,2*view.pixels/canvas.height);
+      gl.uniform3fv(center,model.center);
+      gl.uniform1f(depth,1/(view.radius*7));
+      gl.enableVertexAttribArray(position);
+      drawLines(gridBuffer,2*grid.length,backgroundColor);
+      gl.bindBuffer(gl.ARRAY_BUFFER,surfaceBuffer);
+      gl.vertexAttribPointer(position,3,gl.FLOAT,false,24,0);
+      gl.vertexAttribPointer(direction,3,gl.FLOAT,false,24,12);
+      gl.enableVertexAttribArray(direction);
+      gl.uniform1f(shaded,1);
+      gl.uniform3fv(color,partColor);
+      gl.enable(gl.CULL_FACE);
+      gl.enable(gl.POLYGON_OFFSET_FILL);
+      gl.polygonOffset(1,2);
+      gl.drawArrays(gl.TRIANGLES,0,3*model.faces.length);
+      gl.disable(gl.POLYGON_OFFSET_FILL);
+      gl.disable(gl.CULL_FACE);
+      drawLines(edgeBuffer,2*edges.length,edgeColor);
+    }
+  };
+}
+
+function canvasRenderer(context) {
+  return {
+    update() {},
+    draw(view) {
+      const project = point => {
+        const p = minus(point,model.center);
+        return [canvas.width/2+dot(p,view.right)*view.pixels,canvas.height/2-dot(p,view.up)*view.pixels];
+      };
+      const color = (rgb,shade=1) => "rgb("+rgb.map(v => Math.round(255*v*shade)).join(",")+")";
+      context.clearRect(0,0,canvas.width,canvas.height);
+      context.strokeStyle = color(backgroundColor);
+      context.beginPath();
+      for (const [a,b] of grid) {
+        context.moveTo(...project(a));
+        context.lineTo(...project(b));
+      }
+      context.stroke();
+      const faces = model.faces.map(face => {
+        const n = normal(face);
+        return {face,n,depth:face.reduce((sum,p) => sum+dot(p,view.eye),0)};
+      }).filter(({n}) => dot(n,view.eye)>0).sort((a,b) => a.depth-b.depth);
+      for (const {face,n} of faces) {
+        const shade = .63+.36*Math.max(0,dot(n,light))+.07*dot(n,view.eye);
+        context.beginPath();
+        context.moveTo(...project(face[0]));
+        context.lineTo(...project(face[1]));
+        context.lineTo(...project(face[2]));
+        context.closePath();
+        context.fillStyle = context.strokeStyle = color(partColor,shade);
+        context.fill();
+        context.stroke();
+      }
+    }
+  };
+}
+
+const gl = canvas.getContext("webgl",{alpha:true,antialias:true});
+const renderer = gl ? webGLRenderer(gl) : canvasRenderer(canvas.getContext("2d"));
+function paint() {
+  frame = undefined;
+  if (!model) return;
+  const ratio = Math.min(devicePixelRatio||1,2);
+  const width = Math.round(canvas.clientWidth*ratio), height = Math.round(canvas.clientHeight*ratio);
+  if (!width || !height) return;
+  if (canvas.width!==width || canvas.height!==height) {
+    canvas.width=width;
+    canvas.height=height;
+  }
+  const eye = [Math.cos(azimuth)*Math.cos(elevation),Math.sin(azimuth)*Math.cos(elevation),Math.sin(elevation)];
+  const right = [-Math.sin(azimuth),Math.cos(azimuth),0];
+  const {radius} = model;
+  renderer.draw({eye,right,up:cross(eye,right),radius,pixels:.45*Math.min(width,height)*zoom/radius});
+}
+
+function redraw() {
+  if (frame===undefined) frame=requestAnimationFrame(paint);
+}
+
+const buttons = [...document.querySelectorAll("[data-view]")];
+function labelView(key) {
+  el("view-label").textContent = key ? presets[key].label : "Free orbit";
+  for (const button of buttons) button.setAttribute("aria-pressed",String(button.dataset.view===key));
+}
+function setView(key) {
+  ({azimuth,elevation} = presets[key]);
+  zoom=1;
+  labelView(key);
+  redraw();
+}
+function orbit(dx,dy) {
+  azimuth-=dx*.009;
+  elevation=Math.max(-Math.PI/2,Math.min(Math.PI/2,elevation+dy*.009));
+  labelView();
+  redraw();
+}
+function changeZoom(factor) {
+  zoom=Math.max(.35,Math.min(4,zoom*factor));
+  redraw();
+}
+for (const button of buttons) button.addEventListener("click",() => setView(button.dataset.view));
+el("zoom-in").addEventListener("click",() => changeZoom(1.22));
+el("zoom-out").addEventListener("click",() => changeZoom(1/1.22));
+
+let pointer;
+canvas.addEventListener("pointerdown",e => {
+  if (e.button!==0 || pointer) return;
+  pointer={id:e.pointerId,x:e.clientX,y:e.clientY};
+  canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener("pointermove",e => {
+  if (!pointer || e.pointerId!==pointer.id) return;
+  orbit(e.clientX-pointer.x,e.clientY-pointer.y);
+  pointer.x=e.clientX;
+  pointer.y=e.clientY;
+});
+canvas.addEventListener("lostpointercapture",e => {
+  if (pointer?.id===e.pointerId) pointer=undefined;
+});
+canvas.addEventListener("wheel",e => {
+  e.preventDefault();
+  const delta=e.deltaY*(e.deltaMode===1 ? 16 : e.deltaMode===2 ? 120 : 1);
+  changeZoom(Math.exp(-.0015*delta));
+},{passive:false});
+canvas.addEventListener("keydown",e => {
+  const actions = {
+    ArrowLeft:() => orbit(-14,0), ArrowRight:() => orbit(14,0),
+    ArrowUp:() => orbit(0,14), ArrowDown:() => orbit(0,-14),
+    "+":() => changeZoom(1.22), "=":() => changeZoom(1.22), "-":() => changeZoom(1/1.22),
+    Home:() => setView("iso")
+  };
+  if (Object.hasOwn(actions,e.key)) {
+    e.preventDefault();
+    actions[e.key]();
+  }
+});
+new ResizeObserver(redraw).observe(viewport);
+
+const controls = [
+  {key:"length",label:"fin length"},
+  {key:"height",label:"fin and mount height"}
+].map(({key,label}) => ({key,label,number:el(key),slider:el(key+"-slider")}));
+const countInput = el("fin-count");
+const thicknessInput = el("thickness");
+const roundedRootsInput = el("rounded-roots");
+const cutLengthInput = el("cut-length");
+const cutAngleInput = el("cut-angle");
+const finFields = [
+  {label:"fin thickness",number:thicknessInput},
+  {label:"tip cut length",number:cutLengthInput},
+  {label:"tip cut angle",number:cutAngleInput,unit:"°"}
+];
+const fields = [...controls,...finFields];
+const exportButton = el("export");
+const exportNote = el("export-note");
+const fileNote = "Binary STL · Model units are millimeters";
+const formatted = n => n.toFixed(1);
+let dimensions;
+
+function update() {
+  const finCount = Number(countInput.value);
+  const mountOnly = finCount===0;
+  for (const {key,number,slider} of controls) number.disabled=slider.disabled=mountOnly && key==="length";
+  for (const {number} of finFields) number.disabled=mountOnly;
+  roundedRootsInput.disabled=mountOnly;
+  cutLengthInput.max="";
+  if (!mountOnly && controls.every(({number}) => number.validity.valid) && cutAngleInput.validity.valid) {
+    const availableLength = el("length").valueAsNumber-mount.wall-.1;
+    const availableDepth = el("height").valueAsNumber-.1;
+    const limit = Math.min(availableLength,availableDepth/cutSlope(cutAngleInput.valueAsNumber));
+    cutLengthInput.max=(Math.floor(10*limit+1e-9)/10).toFixed(1);
+  }
+  const invalid = fields.filter(({number}) => !number.disabled && !number.validity.valid);
+  const message = el("validation");
+  for (const field of fields) field.number.setAttribute("aria-invalid",String(invalid.includes(field)));
+  message.hidden = invalid.length===0;
+  exportButton.disabled = invalid.length>0;
+  exportNote.textContent = fileNote;
+  if (invalid.length) {
+    message.textContent = invalid.map(({label,number,unit=" mm"}) => {
+      const range = number.max ? " from "+number.min+" to "+number.max : " of at least "+number.min;
+      return "Enter a "+label+range+unit+" in 0.1"+unit+" steps.";
+    }).join(" ");
+    return;
+  }
+  dimensions = Object.fromEntries(controls.map(({key,number}) => [key,number.valueAsNumber]));
+  const cutLength = mountOnly ? 0 : cutLengthInput.valueAsNumber;
+  const thickness = mountOnly ? mount.wall : thicknessInput.valueAsNumber;
+  model=makeRotor(dimensions.length,dimensions.height,finCount,cutLength,
+    cutAngleInput.valueAsNumber,thickness,roundedRootsInput.checked);
+  edges=getEdges(model.faces);
+  grid=makeGrid(model);
+  renderer.update();
+  el("footprint").textContent=model.footprint.map(formatted).join(" × ")+" mm";
+  el("sweep").textContent=formatted(model.sweep)+" mm";
+  el("overall").textContent=formatted(model.height)+" mm";
+  redraw();
+}
+
+for (const {number,slider} of controls) {
+  number.addEventListener("input",() => {
+    if (number.validity.valid) slider.value=number.value;
+    update();
+  });
+  slider.addEventListener("input",() => {
+    number.value=slider.value;
+    update();
+  });
+}
+countInput.addEventListener("change",update);
+roundedRootsInput.addEventListener("change",update);
+for (const {number} of finFields) number.addEventListener("input",update);
+el("reset").addEventListener("click",() => {
+  countInput.value="4";
+  for (const {key,number,slider} of controls) number.value=slider.value=defaults[key];
+  for (const {number} of finFields) number.value=number.defaultValue;
+  roundedRootsInput.checked=roundedRootsInput.defaultChecked;
+  update();
+});
+
+exportButton.addEventListener("click",() => {
+  if (exportButton.disabled) return;
+  const blob = new Blob([makeBinarySTL(model.faces)],{type:"application/octet-stream"});
+  const link = document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  const finCount = Number(countInput.value);
+  const partName = ["mount-fit","one-fin","two-fin","three-fin","four-fin"][finCount];
+  const lengthTag = finCount ? "-L"+dimensions.length : "";
+  const thickness = thicknessInput.valueAsNumber;
+  const thicknessTag = finCount && thickness!==mount.wall ? "-T"+thickness : "";
+  const cutLength = cutLengthInput.valueAsNumber;
+  const cutTag = finCount && cutLength ? "-C"+cutLength+"-A"+cutAngleInput.valueAsNumber : "";
+  const rootTag = finCount && roundedRootsInput.checked ? "-rounded" : "";
+  link.download="biobuzz-"+partName+lengthTag+"-H"+model.height+thicknessTag+cutTag+rootTag+".stl";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  const url=link.href;
+  setTimeout(() => URL.revokeObjectURL(url),30000);
+  exportNote.textContent="STL exported · "+model.faces.length.toLocaleString()+" triangles";
+});
+setView("iso");
+update();
+</script>
+</body>
+</html>

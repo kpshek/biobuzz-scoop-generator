@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Make red and blue FTC robot signs with your team number and download printable STL files.">
+<title>BioBuzz Part Studio · FTC Alliance Plates</title>
+<style>
+:root{color-scheme:light;--ink:#122b35;--muted:#4d6570;--line:#d5e0df;--paper:#f4f7f5;--teal:#075e59;--mint:#dcf4e9;--dark:#101e28;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--red:#bc202e;--blue:#1453ba}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.48 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.48;cursor:default}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #149684;outline-offset:3px}
+a{color:var(--teal);text-underline-offset:3px}
+.top{border-bottom:1px solid var(--line);background:#fff}
+.top-inner,main{width:min(1280px,calc(100% - 64px));margin:auto}
+.top-inner{min-height:66px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:750}
+.brand-mark{width:34px;height:34px;display:grid;place-items:center;background:var(--teal);border-radius:9px;color:white}
+.brand-mark svg{width:22px;height:22px}
+nav{display:flex;align-items:center;gap:6px}
+nav a{border-radius:7px;padding:6px 9px;text-decoration:none;font-weight:650;font-size:13px;white-space:nowrap}
+nav a:hover{background:#edf4f2}
+nav a[aria-current]{background:var(--mint)}
+main{padding:32px 0 24px}
+.eyebrow,.badge,.metric-label,.alliance-label{font:700 11px/1.35 var(--mono);letter-spacing:.075em;text-transform:uppercase}
+.eyebrow{margin:0 0 8px;color:var(--teal)}
+h1{font-size:clamp(38px,4.3vw,61px);line-height:1.04;letter-spacing:-.062em;margin:0;font-weight:760}
+.intro{margin:12px 0 25px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(320px,1fr);gap:20px;align-items:start}
+.card{border:1px solid var(--line);border-radius:16px;background:white;overflow:hidden}
+.preview{background:var(--dark);color:#eaf6f7;border-color:#263c45}
+.preview-head{padding:14px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b424b}
+h2{font-size:17px;letter-spacing:-.025em;line-height:1.25;margin:0}
+.preview-head h2{display:flex;align-items:center;gap:9px}
+.dot{width:7px;height:7px;border-radius:50%;background:#65dfbc;box-shadow:0 0 10px #65dfbc80}
+.badge{padding:5px 7px;border:1px solid #39545f;border-radius:5px;color:#c4dbe0;letter-spacing:.045em;white-space:nowrap}
+.stage{display:grid;gap:20px;padding:23px clamp(15px,4vw,58px) 27px;background:radial-gradient(ellipse at 50% 42%,#213a44 0,#14262e 61%,#101d26 100%)}
+.sample{margin:0;min-width:0}
+.alliance-label{display:flex;align-items:center;gap:7px;margin:0 0 8px;color:#c8dbe1}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--alliance)}
+.sign{display:block;width:100%;max-height:168px;filter:drop-shadow(0 4px 3px #0006)}
+.sign .base{fill:var(--alliance)}
+.sign .digits{fill:#fff;fill-rule:evenodd}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);margin:0;border-top:1px solid #2b424b;background:#142630}
+.metrics div{padding:12px 14px}
+.metrics div+div{border-left:1px solid #2b424b}
+.metric-label{color:#b5cbd2;letter-spacing:.045em;font-size:10px}
+.metrics dd{font:650 15px/1.35 var(--mono);margin:5px 0 0;white-space:nowrap}
+.config{padding:20px 21px}
+.config h2{margin-bottom:15px}
+label{display:block;font-weight:720;margin:0 0 5px}
+input{width:100%;padding:10px 12px;color:var(--ink);background:#fbfefd;border:1px solid #b9cece;border-radius:8px;font:700 18px/1.3 var(--mono);letter-spacing:.07em}
+input[aria-invalid=true]{border-color:#a5262b}
+.help,.status{margin:7px 0 0;font-size:12px;color:var(--muted)}
+.status[data-error]{color:#9c252b}
+.spec{background:#f2f7f6;border:1px solid #dde9e6;border-radius:10px;padding:11px 12px;margin:16px 0}
+.spec dl{margin:0}
+.spec dl div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:12px}
+.spec dl div+div{margin-top:4px}
+.spec dt{color:var(--muted)}
+.spec dd{margin:0;text-align:right;font:650 11px/1.35 var(--mono)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.download{padding:9px 8px;min-height:43px;border:1px solid transparent;border-radius:8px;background:var(--alliance);color:white;font-size:13px;font-weight:740}
+.download:hover:enabled{filter:brightness(.87)}
+.print-note{margin:10px 0 0;font-size:12px;color:var(--muted)}
+.notes{margin-top:17px;padding:15px 17px;display:flex;justify-content:space-between;align-items:start;gap:18px;font-size:13px;color:var(--muted)}
+.notes h2{font-size:14px;color:var(--ink);margin-bottom:4px}
+.notes p{margin:0;max-width:79ch}
+.notes a{white-space:nowrap;font-size:12px}
+@media(max-width:890px){.top-inner,main{width:calc(100% - 36px)}.layout{grid-template-columns:1fr;gap:15px}.notes{flex-direction:column;gap:7px}.intro{margin-bottom:19px}}
+@media(max-width:480px){.top-inner,main{width:calc(100% - 24px)}.top-inner{min-height:55px}.config{padding:17px}.preview-head{padding:12px}.metrics div{padding:10px 7px}.metrics dd{font-size:12px}.metric-label{font-size:9px}main{padding-top:24px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h12M16 8v12M16 16H4M8 16V4"/><circle cx="12" cy="12" r="1"/></svg></span>BioBuzz Part Studio</div>
+    <nav aria-label="Generators">
+      <a href="BioBuzz_Scoop_Generator.html">Scoop</a>
+      <a href="BioBuzz-Fin-Studio.html">Fins</a>
+      <a href="FTC-Alliance-Plate.html" aria-current="page">Alliance plates</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <p class="eyebrow">FIRST Tech Challenge · BIOBUZZ</p>
+  <h1>FTC alliance plates</h1>
+  <p class="intro">Create a matching pair of red and blue robot signs with your team number.</p>
+  <div class="layout">
+    <section class="card preview" aria-labelledby="preview-heading">
+      <div class="preview-head">
+        <h2 id="preview-heading"><span class="dot"></span>Plate preview</h2>
+        <span class="badge" id="preview-label">Example</span>
+      </div>
+      <div class="stage">
+        <figure class="sample" style="--alliance:var(--red)">
+          <figcaption class="alliance-label"><span class="swatch"></span>Red alliance</figcaption>
+          <svg class="sign" viewBox="0 0 165 69" role="img" aria-label="Red alliance plate"><rect class="base" width="100%" height="100%"/><path class="digits"/></svg>
+        </figure>
+        <figure class="sample" style="--alliance:var(--blue)">
+          <figcaption class="alliance-label"><span class="swatch"></span>Blue alliance</figcaption>
+          <svg class="sign" viewBox="0 0 165 69" role="img" aria-label="Blue alliance plate"><rect class="base" width="100%" height="100%"/><path class="digits"/></svg>
+        </figure>
+      </div>
+      <dl class="metrics" aria-label="Plate dimensions">
+        <div><dt class="metric-label">Width</dt><dd id="width">165 mm</dd></div>
+        <div><dt class="metric-label">Height</dt><dd id="height">69 mm</dd></div>
+        <div><dt class="metric-label">Digit height</dt><dd>57 mm</dd></div>
+      </dl>
+    </section>
+    <section class="card config" aria-labelledby="config-heading">
+      <h2 id="config-heading">Customize the signs</h2>
+      <label for="team">Team number</label>
+      <input id="team" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" spellcheck="false" placeholder="e.g. 21001" aria-describedby="team-help status">
+      <p class="help" id="team-help">Digits 0–9 only. The plate widens automatically to fit.</p>
+      <p class="status" id="status" role="status">Loading the installed Arial Bold font…</p>
+      <div class="spec">
+        <dl>
+          <div><dt>Lettering</dt><dd>Arial Bold · 57 mm</dd></div>
+          <div><dt>Background margin</dt><dd id="margin">At least 6 mm</dd></div>
+          <div><dt>Base / raised digits</dt><dd>2.4 / 0.8 mm</dd></div>
+        </dl>
+      </div>
+      <div class="actions">
+        <button class="download" type="button" data-color="red" style="--alliance:var(--red)" disabled>Download red STL</button>
+        <button class="download" type="button" data-color="blue" style="--alliance:var(--blue)" disabled>Download blue STL</button>
+      </div>
+      <p class="print-note">STL stores geometry. In your slicer, start with opaque red or blue and change to opaque white at the first raised-digit layer, above the 2.4 mm base.</p>
+    </section>
+  </div>
+  <section class="card notes" aria-labelledby="rules-heading">
+    <div>
+      <h2 id="rules-heading">Competition setup</h2>
+      <p id="rules-note">The plate is 69 mm tall to fit 57 mm digits with 6 mm above and below. Print two copies of each alliance color. Install two matching signs on robot surfaces at least 90° apart, where field staff can see them.</p>
+    </div>
+    <a href="https://ftc-resources.firstinspires.org/ftc/archive/2027/game/cm-html" target="_blank" rel="noopener">FTC rules R401–R403 ↗</a>
+  </section>
+</main>
+<script id="earcut">
+/* Mapbox Earcut 3.0.2
+ISC License
+
+Copyright (c) 2024, Mapbox
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF
+THIS SOFTWARE.
+*/
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).earcut={})}(this,function(e){"use strict";function t(e,t,n,r,x){let i;if(x===k(e,t,n,r)>0)for(let x=t;x<n;x+=r)i=w(x/r|0,e[x],e[x+1],i);else for(let x=n-r;x>=t;x-=r)i=w(x/r|0,e[x],e[x+1],i);return i&&Z(i,i.next)&&(z(i),i=i.next),i}function n(e,t){if(!e)return e;t||(t=e);let n,r=e;do{if(n=!1,r.steiner||!Z(r,r.next)&&0!==a(r.prev,r,r.next))r=r.next;else{if(z(r),r=t=r.prev,r===r.next)break;n=!0}}while(n||r!==t);return t}function r(e,t,f,l,c,p,s){if(!e)return;!s&&p&&function(e,t,n,r){let x=e;do{0===x.z&&(x.z=y(x.x,x.y,t,n,r)),x.prevZ=x.prev,x.nextZ=x.next,x=x.next}while(x!==e);x.prevZ.nextZ=null,x.prevZ=null,function(e){let t,n=1;do{let r,x=e;e=null;let i=null;for(t=0;x;){t++;let o=x,u=0;for(let e=0;e<n&&(u++,o=o.nextZ,o);e++);let f=n;for(;u>0||f>0&&o;)0!==u&&(0===f||!o||x.z<=o.z)?(r=x,x=x.nextZ,u--):(r=o,o=o.nextZ,f--),i?i.nextZ=r:e=r,r.prevZ=i,i=r;x=o}i.nextZ=null,n*=2}while(t>1)}(x)}(e,l,c,p);let v=e;for(;e.prev!==e.next;){const y=e.prev,h=e.next;if(p?i(e,l,c,p):x(e))t.push(y.i,e.i,h.i),z(e),e=h.next,v=h.next;else if((e=h)===v){s?1===s?r(e=o(n(e),t),t,f,l,c,p,2):2===s&&u(e,t,f,l,c,p):r(n(e),t,f,l,c,p,1);break}}}function x(e){const t=e.prev,n=e,r=e.next;if(a(t,n,r)>=0)return!1;const x=t.x,i=n.x,o=r.x,u=t.y,f=n.y,l=r.y,c=Math.min(x,i,o),y=Math.min(u,f,l),p=Math.max(x,i,o),s=Math.max(u,f,l);let h=r.next;for(;h!==t;){if(h.x>=c&&h.x<=p&&h.y>=y&&h.y<=s&&v(x,u,i,f,o,l,h.x,h.y)&&a(h.prev,h,h.next)>=0)return!1;h=h.next}return!0}function i(e,t,n,r){const x=e.prev,i=e,o=e.next;if(a(x,i,o)>=0)return!1;const u=x.x,f=i.x,l=o.x,c=x.y,p=i.y,s=o.y,h=Math.min(u,f,l),Z=Math.min(c,p,s),d=Math.max(u,f,l),M=Math.max(c,p,s),m=y(h,Z,t,n,r),g=y(d,M,t,n,r);let b=e.prevZ,w=e.nextZ;for(;b&&b.z>=m&&w&&w.z<=g;){if(b.x>=h&&b.x<=d&&b.y>=Z&&b.y<=M&&b!==x&&b!==o&&v(u,c,f,p,l,s,b.x,b.y)&&a(b.prev,b,b.next)>=0)return!1;if(b=b.prevZ,w.x>=h&&w.x<=d&&w.y>=Z&&w.y<=M&&w!==x&&w!==o&&v(u,c,f,p,l,s,w.x,w.y)&&a(w.prev,w,w.next)>=0)return!1;w=w.nextZ}for(;b&&b.z>=m;){if(b.x>=h&&b.x<=d&&b.y>=Z&&b.y<=M&&b!==x&&b!==o&&v(u,c,f,p,l,s,b.x,b.y)&&a(b.prev,b,b.next)>=0)return!1;b=b.prevZ}for(;w&&w.z<=g;){if(w.x>=h&&w.x<=d&&w.y>=Z&&w.y<=M&&w!==x&&w!==o&&v(u,c,f,p,l,s,w.x,w.y)&&a(w.prev,w,w.next)>=0)return!1;w=w.nextZ}return!0}function o(e,t){let r=e;do{const n=r.prev,x=r.next.next;!Z(n,x)&&d(n,r,r.next,x)&&g(n,x)&&g(x,n)&&(t.push(n.i,r.i,x.i),z(r),z(r.next),r=e=x),r=r.next}while(r!==e);return n(r)}function u(e,t,x,i,o,u){let f=e;do{let e=f.next.next;for(;e!==f.prev;){if(f.i!==e.i&&h(f,e)){let l=b(f,e);return f=n(f,f.next),l=n(l,l.next),r(f,t,x,i,o,u,0),void r(l,t,x,i,o,u,0)}e=e.next}f=f.next}while(f!==e)}function f(e,t){let n=e.x-t.x;if(0===n&&(n=e.y-t.y,0===n)){n=(e.next.y-e.y)/(e.next.x-e.x)-(t.next.y-t.y)/(t.next.x-t.x)}return n}function l(e,t){const r=function(e,t){let n=t;const r=e.x,x=e.y;let i,o=-1/0;if(Z(e,n))return n;do{if(Z(e,n.next))return n.next;if(x<=n.y&&x>=n.next.y&&n.next.y!==n.y){const e=n.x+(x-n.y)*(n.next.x-n.x)/(n.next.y-n.y);if(e<=r&&e>o&&(o=e,i=n.x<n.next.x?n:n.next,e===r))return i}n=n.next}while(n!==t);if(!i)return null;const u=i,f=i.x,l=i.y;let y=1/0;n=i;do{if(r>=n.x&&n.x>=f&&r!==n.x&&s(x<l?r:o,x,f,l,x<l?o:r,x,n.x,n.y)){const t=Math.abs(x-n.y)/(r-n.x);g(n,e)&&(t<y||t===y&&(n.x>i.x||n.x===i.x&&c(i,n)))&&(i=n,y=t)}n=n.next}while(n!==u);return i}(e,t);if(!r)return t;const x=b(r,e);return n(x,x.next),n(r,r.next)}function c(e,t){return a(e.prev,e,t.prev)<0&&a(t.next,e,e.next)<0}function y(e,t,n,r,x){return(e=1431655765&((e=858993459&((e=252645135&((e=16711935&((e=(e-n)*x|0)|e<<8))|e<<4))|e<<2))|e<<1))|(t=1431655765&((t=858993459&((t=252645135&((t=16711935&((t=(t-r)*x|0)|t<<8))|t<<4))|t<<2))|t<<1))<<1}function p(e){let t=e,n=e;do{(t.x<n.x||t.x===n.x&&t.y<n.y)&&(n=t),t=t.next}while(t!==e);return n}function s(e,t,n,r,x,i,o,u){return(x-o)*(t-u)>=(e-o)*(i-u)&&(e-o)*(r-u)>=(n-o)*(t-u)&&(n-o)*(i-u)>=(x-o)*(r-u)}function v(e,t,n,r,x,i,o,u){return!(e===o&&t===u)&&s(e,t,n,r,x,i,o,u)}function h(e,t){return e.next.i!==t.i&&e.prev.i!==t.i&&!function(e,t){let n=e;do{if(n.i!==e.i&&n.next.i!==e.i&&n.i!==t.i&&n.next.i!==t.i&&d(n,n.next,e,t))return!0;n=n.next}while(n!==e);return!1}(e,t)&&(g(e,t)&&g(t,e)&&function(e,t){let n=e,r=!1;const x=(e.x+t.x)/2,i=(e.y+t.y)/2;do{n.y>i!=n.next.y>i&&n.next.y!==n.y&&x<(n.next.x-n.x)*(i-n.y)/(n.next.y-n.y)+n.x&&(r=!r),n=n.next}while(n!==e);return r}(e,t)&&(a(e.prev,e,t.prev)||a(e,t.prev,t))||Z(e,t)&&a(e.prev,e,e.next)>0&&a(t.prev,t,t.next)>0)}function a(e,t,n){return(t.y-e.y)*(n.x-t.x)-(t.x-e.x)*(n.y-t.y)}function Z(e,t){return e.x===t.x&&e.y===t.y}function d(e,t,n,r){const x=m(a(e,t,n)),i=m(a(e,t,r)),o=m(a(n,r,e)),u=m(a(n,r,t));return x!==i&&o!==u||(!(0!==x||!M(e,n,t))||(!(0!==i||!M(e,r,t))||(!(0!==o||!M(n,e,r))||!(0!==u||!M(n,t,r)))))}function M(e,t,n){return t.x<=Math.max(e.x,n.x)&&t.x>=Math.min(e.x,n.x)&&t.y<=Math.max(e.y,n.y)&&t.y>=Math.min(e.y,n.y)}function m(e){return e>0?1:e<0?-1:0}function g(e,t){return a(e.prev,e,e.next)<0?a(e,t,e.next)>=0&&a(e,e.prev,t)>=0:a(e,t,e.prev)<0||a(e,e.next,t)<0}function b(e,t){const n=j(e.i,e.x,e.y),r=j(t.i,t.x,t.y),x=e.next,i=t.prev;return e.next=t,t.prev=e,n.next=x,x.prev=n,r.next=n,n.prev=r,i.next=r,r.prev=i,r}function w(e,t,n,r){const x=j(e,t,n);return r?(x.next=r.next,x.prev=r,r.next.prev=x,r.next=x):(x.prev=x,x.next=x),x}function z(e){e.next.prev=e.prev,e.prev.next=e.next,e.prevZ&&(e.prevZ.nextZ=e.nextZ),e.nextZ&&(e.nextZ.prevZ=e.prevZ)}function j(e,t,n){return{i:e,x:t,y:n,prev:null,next:null,z:0,prevZ:null,nextZ:null,steiner:!1}}function k(e,t,n,r){let x=0;for(let i=t,o=n-r;i<n;i+=r)x+=(e[o]-e[i])*(e[i+1]+e[o+1]),o=i;return x}e.default=function(e,n,x=2){const i=n&&n.length,o=i?n[0]*x:e.length;let u=t(e,0,o,x,!0);const c=[];if(!u||u.next===u.prev)return c;let y,s,v;if(i&&(u=function(e,n,r,x){const i=[];for(let r=0,o=n.length;r<o;r++){const u=t(e,n[r]*x,r<o-1?n[r+1]*x:e.length,x,!1);u===u.next&&(u.steiner=!0),i.push(p(u))}i.sort(f);for(let e=0;e<i.length;e++)r=l(i[e],r);return r}(e,n,u,x)),e.length>80*x){y=e[0],s=e[1];let t=y,n=s;for(let r=x;r<o;r+=x){const x=e[r],i=e[r+1];x<y&&(y=x),i<s&&(s=i),x>t&&(t=x),i>n&&(n=i)}v=Math.max(t-y,n-s),v=0!==v?32767/v:0}return r(u,c,x,y,s,v,0),c},e.deviation=function(e,t,n,r){const x=t&&t.length,i=x?t[0]*n:e.length;let o=Math.abs(k(e,0,i,n));if(x)for(let r=0,x=t.length;r<x;r++){const i=t[r]*n,u=r<x-1?t[r+1]*n:e.length;o-=Math.abs(k(e,i,u,n))}let u=0;for(let t=0;t<r.length;t+=3){const x=r[t]*n,i=r[t+1]*n,o=r[t+2]*n;u+=Math.abs((e[x]-e[o])*(e[i+1]-e[x+1])-(e[x]-e[i])*(e[o+1]-e[x+1]))}return 0===o&&0===u?0:Math.abs((u-o)/o)},e.flatten=function(e){const t=[],n=[],r=e[0][0].length;let x=0,i=0;for(const o of e){for(const e of o)for(let n=0;n<r;n++)t.push(e[n]);i&&(x+=i,n.push(x)),i=o.length}return{vertices:t,holes:n,dimensions:r}},Object.defineProperty(e,"__esModule",{value:!0})});
+</script>
+<script id="plate-geometry">
+"use strict";
+const spec = Object.freeze({minWidth:165,height:69,digitHeight:57,margin:6,gap:6,base:2.4,relief:.8});
+const turn = (a,b,c) => (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+const area = contour => contour.reduce((sum,p,i) => {
+  const q=contour[(i+1)%contour.length];
+  return sum+p[0]*q[1]-q[0]*p[1];
+},0)/2;
+
+// Marching squares uses interpolated alpha crossings to recover clean glyph outlines.
+function traceContours(mask,width,height) {
+  const nodes = new Map();
+  const stride=2*width+1;
+  const cases = [[],[[3,0]],[[0,1]],[[3,1]],[[1,2]],null,[[0,2]],[[3,2]],
+    [[2,3]],[[0,2]],null,[[1,2]],[[1,3]],[[0,1]],[[3,0]],[]];
+  const corners = [[0,0],[1,0],[1,1],[0,1]];
+  const edges = [[0,1],[1,2],[3,2],[0,3]];
+  for (let y=0;y<height-1;y++) {
+    for (let x=0;x<width-1;x++) {
+      const i=y*width+x;
+      const a=mask[i], b=mask[i+1], c=mask[i+width+1], d=mask[i+width];
+      const code=(a>=128)|((b>=128)<<1)|((c>=128)<<2)|((d>=128)<<3);
+      if (code===0 || code===15) continue;
+      const values=[a,b,c,d];
+      const centerInside=(a+b+c+d)>=510;
+      const pairs=cases[code] ?? ((code===5)===centerInside ? [[0,1],[2,3]] : [[3,0],[1,2]]);
+      const node = edge => {
+        const [first,last]=edges[edge];
+        const p=corners[first], q=corners[last];
+        const key=(2*y+p[1]+q[1])*stride+2*x+p[0]+q[0];
+        if (!nodes.has(key)) {
+          const t=(127.5-values[first])/(values[last]-values[first]);
+          nodes.set(key,{point:[x+p[0]+t*(q[0]-p[0]),y+p[1]+t*(q[1]-p[1])],next:[]});
+        }
+        return nodes.get(key);
+      };
+      for (const [e1,e2] of pairs) {
+        const p=node(e1), q=node(e2);
+        p.next.push(q);
+        q.next.push(p);
+      }
+    }
+  }
+  const contours = [];
+  for (const start of nodes.values()) {
+    if (start.seen) continue;
+    const points = [];
+    let node=start, previous;
+    do {
+      if (!node || node.seen || node.next.length!==2) throw new Error("An Arial Bold outline could not be closed.");
+      points.push(node.point);
+      node.seen=true;
+      const next=node.next.find(neighbor => neighbor!==previous);
+      previous=node;
+      node=next;
+    } while(node!==start);
+    contours.push(points);
+  }
+  return contours;
+}
+
+function simplifyLine(points) {
+  const start=points[0], end=points[points.length-1];
+  const dx=end[0]-start[0], dy=end[1]-start[1];
+  const length=dx*dx+dy*dy;
+  let farthest=0, index=0;
+  for (let i=1;i<points.length-1;i++) {
+    const x=points[i][0]-start[0], y=points[i][1]-start[1];
+    const t=length ? Math.max(0,Math.min(1,(x*dx+y*dy)/length)) : 0;
+    const distance=(x-t*dx)**2+(y-t*dy)**2;
+    if (distance>farthest) {
+      farthest=distance;
+      index=i;
+    }
+  }
+  if (farthest<=.32**2) return [start,end];
+  return [...simplifyLine(points.slice(0,index+1)).slice(0,-1),...simplifyLine(points.slice(index))];
+}
+
+function simplifyContour(points) {
+  let split=1;
+  for (let i=2;i<points.length;i++) {
+    if (Math.hypot(points[i][0]-points[0][0],points[i][1]-points[0][1]) >
+        Math.hypot(points[split][0]-points[0][0],points[split][1]-points[0][1])) split=i;
+  }
+  const contour=[...simplifyLine(points.slice(0,split+1)).slice(0,-1),
+    ...simplifyLine([...points.slice(split),points[0]]).slice(0,-1)];
+  return contour.filter((p,i) => Math.abs(turn(contour[(i+contour.length-1)%contour.length],
+    p,contour[(i+1)%contour.length]))>1e-8);
+}
+
+function readGlyph(mask,width,height) {
+  const contours=traceContours(mask,width,height)
+    .map(simplifyContour).filter(contour => contour.length>=3 && Math.abs(area(contour))>1)
+    .sort((a,b) => Math.abs(area(b))-Math.abs(area(a)));
+  if (!contours.length) throw new Error("Arial Bold did not produce a visible digit.");
+  const xs=contours[0].map(p=>p[0]), ys=contours[0].map(p=>p[1]);
+  const xMin=Math.min(...xs), yMax=Math.max(...ys);
+  const scale=spec.digitHeight/(yMax-Math.min(...ys));
+  const outlines=contours.map((contour,index) => {
+    const points=contour.map(([x,y])=>[(x-xMin)*scale,(yMax-y)*scale]);
+    if ((area(points)>0)!==(index===0)) points.reverse();
+    return points;
+  });
+  return {width:(Math.max(...xs)-xMin)*scale,outlines};
+}
+
+function makeLayout(number,getGlyph) {
+  const glyphs=[...number].map(getGlyph);
+  const run=glyphs.reduce((sum,glyph)=>sum+glyph.width,0)+spec.gap*(glyphs.length-1);
+  const width=Math.max(spec.minWidth,Math.ceil(10*(run+2*spec.margin))/10);
+  const baseline=(spec.height-spec.digitHeight)/2;
+  let x=(width-run)/2;
+  const digits=glyphs.map(({width,outlines}) => {
+    const digit={start:x,outlines:outlines.map(contour=>contour.map(([u,v])=>[x+u,baseline+v]))};
+    x+=width+spec.gap;
+    return digit;
+  });
+  return {width,height:spec.height,digits};
+}
+
+function makePlate(layout) {
+  const faces=[];
+  const {width,height,digits}=layout;
+  const top=spec.base+spec.relief;
+  const lift=(point,z)=>[point[0],point[1],z];
+  function cap(contours,z,reverse=false) {
+    const points=contours.flat();
+    const flat=earcut.flatten(contours);
+    const triangles=earcut.default(flat.vertices,flat.holes,flat.dimensions);
+    if (!triangles.length) throw new Error("A plate surface could not be triangulated.");
+    for (let i=0;i<triangles.length;i+=3) {
+      const a=points[triangles[i]], b=points[triangles[i+1]], c=points[triangles[i+2]];
+      const flip=(turn(a,b,c)<0)!==reverse;
+      faces.push((flip ? [a,c,b] : [a,b,c]).map(point=>lift(point,z)));
+    }
+  }
+  function wall(a,b,bottom,top) {
+    const p=lift(a,bottom), q=lift(b,bottom), r=lift(b,top), s=lift(a,top);
+    faces.push([p,q,r],[p,r,s]);
+  }
+  // One tile per digit avoids overlapping triangulation bridges between digits.
+  const boundaries=[0,...digits.slice(1).map(digit=>digit.start-spec.gap/2),width];
+  for (let i=0;i<digits.length;i++) {
+    const left=boundaries[i], right=boundaries[i+1];
+    const rect=[[left,0],[right,0],[right,height],[left,height]];
+    const {outlines}=digits[i];
+    cap([rect],0,true);
+    cap([rect,outlines[0]],spec.base);
+    for (const counter of outlines.slice(1)) cap([counter],spec.base);
+    cap(outlines,top);
+    wall(rect[0],rect[1],0,spec.base);
+    wall(rect[2],rect[3],0,spec.base);
+    if (i===0) wall(rect[3],rect[0],0,spec.base);
+    if (i===digits.length-1) wall(rect[1],rect[2],0,spec.base);
+    for (const contour of outlines) {
+      contour.forEach((point,j)=>wall(point,contour[(j+1)%contour.length],spec.base,top));
+    }
+  }
+  return faces;
+}
+
+function makeBinarySTL(faces,color) {
+  const bytes=new ArrayBuffer(84+50*faces.length);
+  const data=new DataView(bytes);
+  const header="FTC "+color+" base / white digits | switch above 2.4 mm";
+  new Uint8Array(bytes).set(new TextEncoder().encode(header));
+  data.setUint32(80,faces.length,true);
+  const edges=new Map();
+  let offset=84;
+  for (const [a,b,c] of faces) {
+    const [ux,uy,uz]=b.map((value,i)=>value-a[i]), [vx,vy,vz]=c.map((value,i)=>value-a[i]);
+    const n=[uy*vz-uz*vy,uz*vx-ux*vz,ux*vy-uy*vx];
+    const size=Math.hypot(...n);
+    if (!(size>1e-10)) throw new Error("The lettering produced a degenerate surface.");
+    const points=[a,b,c].map(p=>p.map(Math.fround).join(","));
+    for (let i=0;i<3;i++) {
+      const p=points[i], q=points[(i+1)%3], forward=p<q;
+      const key=forward ? p+"|"+q : q+"|"+p;
+      const edge=edges.get(key) ?? {count:0,orientation:0};
+      edge.count++;
+      edge.orientation+=forward ? 1 : -1;
+      edges.set(key,edge);
+    }
+    for (const value of [...n.map(value=>value/size),...a,...b,...c]) {
+      data.setFloat32(offset,value,true);
+      offset+=4;
+    }
+    offset+=2;
+  }
+  if ([...edges.values()].some(edge=>edge.count!==2 || edge.orientation!==0)) {
+    throw new Error("The STL has an open edge. The export was stopped.");
+  }
+  return bytes;
+}
+</script>
+<script>
+"use strict";
+const el = id => document.getElementById(id);
+const team=el("team"), status=el("status"), signs=[...document.querySelectorAll(".sign")];
+const buttons=[...document.querySelectorAll("[data-color]")];
+const glyphs=new Map();
+let context, current;
+const mm = value => value.toFixed(1).replace(/\.0$/,"")+" mm";
+function getGlyph(digit) {
+  if (!glyphs.has(digit)) {
+    const {width,height}=context.canvas;
+    context.clearRect(0,0,width,height);
+    context.fillText(digit,60,850);
+    const rgba=context.getImageData(0,0,width,height).data;
+    const mask=new Uint8Array(width*height);
+    for (let i=0;i<mask.length;i++) mask[i]=rgba[4*i+3];
+    glyphs.set(digit,readGlyph(mask,width,height));
+  }
+  return glyphs.get(digit);
+}
+function showStatus(message,error=false) {
+  status.textContent=message;
+  status.toggleAttribute("data-error",error);
+}
+function update() {
+  if (!context) return;
+  const number=team.value;
+  const valid=/^[0-9]+$/.test(number);
+  const invalid=number.length>0 && !valid;
+  team.setAttribute("aria-invalid",String(invalid));
+  current=undefined;
+  for (const button of buttons) button.disabled=true;
+  try {
+    const displayed=valid ? number : "21001";
+    const layout=makeLayout(displayed,getGlyph);
+    const path=layout.digits.flatMap(digit=>digit.outlines).map(contour=>
+      "M"+contour.map(([x,y])=>x.toFixed(4)+" "+(layout.height-y).toFixed(4)).join("L")+"Z").join("");
+    for (const [i,sign] of signs.entries()) {
+      sign.setAttribute("viewBox","0 0 "+layout.width+" "+layout.height);
+      sign.setAttribute("aria-label",(i===0 ? "Red" : "Blue")+" alliance plate for team "+displayed);
+      sign.querySelector(".digits").setAttribute("d",path);
+    }
+    el("preview-label").textContent=valid ? "Your plate" : "Example";
+    el("width").textContent=mm(layout.width);
+    el("height").textContent=mm(layout.height);
+    if (valid) {
+      current=layout;
+      for (const button of buttons) button.disabled=false;
+    }
+    showStatus(invalid ? "Enter a team number using only digits 0–9." : valid ?
+      (layout.width>spec.minWidth ? "Plate widened to keep the full margins." : "Ready to download both alliance colors.") :
+      "Enter a team number to enable STL downloads.",invalid);
+  } catch (error) {
+    showStatus(error.message,true);
+  }
+}
+function download(color) {
+  if (!current) return;
+  try {
+    const bytes=makeBinarySTL(makePlate(current),color);
+    const url=URL.createObjectURL(new Blob([bytes],{type:"application/octet-stream"}));
+    const link=document.createElement("a");
+    link.href=url;
+    link.download="ftc-"+team.value+"-"+color+".stl";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+    showStatus((color==="red" ? "Red" : "Blue")+" STL exported. Switch to white above the 2.4 mm base.");
+  } catch (error) {
+    showStatus(error.message,true);
+  }
+}
+team.addEventListener("input",update);
+for (const button of buttons) button.addEventListener("click",()=>download(button.dataset.color));
+
+async function loadArial() {
+  try {
+    const font=new FontFace("Plate Arial",'local("Arial Bold"), local("Arial-BoldMT")',{weight:"700"});
+    document.fonts.add(await font.load());
+    const canvas=document.createElement("canvas");
+    canvas.width=900;
+    canvas.height=1000;
+    context=canvas.getContext("2d",{willReadFrequently:true});
+    if (!context) throw new Error("Canvas is unavailable.");
+    context.font='700 950px "Plate Arial"';
+    update();
+  } catch {
+    showStatus("Arial Bold could not be loaded. Open this page in a browser with Arial Bold installed.",true);
+  }
+}
+loadArial();
+</script>
+</body>
+</html>

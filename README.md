@@ -1,16 +1,20 @@
-# BioBuzz Scoop Generator
+# BioBuzz Part Studio
 
-An offline HTML/JavaScript tool for designing a curved shooter scoop with a rotatable 3D preview, binary STL export, and shareable JSON settings. Open **BioBuzz_Scoop_Generator.html** in Chrome or Edge. No installation, server, build step, or external JavaScript dependencies are required.
+Three browser tools for the BioBuzz robot. Keep the HTML files in the same folder, open **BioBuzz_Scoop_Generator.html** in Chrome or Edge, and use the top navigation. Each page works offline with no server or build step.
+
+- **Scoop** generates a curved shooter scoop with a rotatable 3D preview, binary STL export, and shareable JSON settings.
+- **Fins** generates a servo-mounted rotor with 0–4 fins, adjustable length, height and thickness, optional angled tip cuts, and rounded roots.
+- **Alliance plates** generates red and blue FTC signs for a team number. Plates start at 165 × 69 mm and widen as needed for 57 mm digits and at least 6 mm of margin. This page uses the device's installed Arial Bold font. Print the 2.4 mm base in the alliance color, then switch to white at the first raised-digit layer.
 
 ## Public website and automatic deployment
 
-Open **[BioBuzz Scoop Generator](https://kpshek.github.io/biobuzz-scoop-generator/)** to use the hosted app. The hosted app processes JSON and STL files locally in your browser, just like the downloaded HTML.
+Open **[BioBuzz Part Studio](https://kpshek.github.io/biobuzz-scoop-generator/)** to use the hosted site. It opens the scoop generator and processes JSON and STL files locally in your browser.
 
-GitHub Pages uses the [Deploy GitHub Pages workflow](https://github.com/kpshek/biobuzz-scoop-generator/actions/workflows/pages.yml). Every push to `main` runs the settings and STL checks, copies `BioBuzz_Scoop_Generator.html` to the published site's `index.html`, includes the example JSON configurations, and deploys the result. The standalone source file remains the single application source; there is no duplicate HTML to maintain. Tests and repository configuration are excluded from the site artifact.
+GitHub Pages uses the [Deploy GitHub Pages workflow](https://github.com/kpshek/biobuzz-scoop-generator/actions/workflows/pages.yml). Every push to `main` runs the scoop settings and STL checks, then publishes the three HTML pages and example JSON configurations. The workflow also copies the scoop page to `index.html` so the existing home URL opens it. Tests and repository configuration are excluded from the site artifact.
 
 Repository **Settings > Pages > Build and deployment > Source** must be set to **GitHub Actions**. To redeploy an existing commit, open **Actions > Deploy GitHub Pages > Run workflow** and select `main`. A failed check stops publication. The workflow uses the `github-pages` environment and needs no additional secrets or packages.
 
-The deployment directory `_site/` is generated during the workflow and is ignored by Git. The app also remains usable offline by opening the standalone HTML file.
+The deployment directory `_site/` is generated during the workflow and is ignored by Git.
 
 ## Use the generator
 
@@ -44,7 +48,9 @@ Settings files use `format: "biobuzz-scoop-settings"`, `schemaVersion: 1`, `unit
 
 ## Project files and checks
 
-- `BioBuzz_Scoop_Generator.html` — standalone application, adapted from the supplied HTML by removing version labels from the filename and interface; geometry and JSON behavior are preserved.
+- `BioBuzz_Scoop_Generator.html` — standalone scoop generator.
+- `BioBuzz-Fin-Studio.html` — standalone fin generator.
+- `FTC-Alliance-Plate.html` — standalone alliance plate generator.
 - `examples/` — portable configurations for import.
 - `tests/app.test.cjs` — dependency-free checks for settings export/import, rejection and rollback, and binary STL output for both examples.
 - `.gitattributes` — consistent text line endings.

@@ -8,7 +8,11 @@
 :root{color-scheme:dark;--bg:#0b1320;--panel:#142235;--panel2:#172a40;--line:#2d455c;--text:#eef5fa;--muted:#93a8bd;--accent:#38d2ba;--warn:#ffce73;--err:#ff8587}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 header{padding:18px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
-header small{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--accent);font-weight:800}h1{font-size:21px;letter-spacing:-.04em;margin:0}header .pill{border:1px solid #287e78;color:#8af3e6;border-radius:20px;padding:6px 10px;font-size:12px;white-space:nowrap}
+header small{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--accent);font-weight:800}h1{font-size:21px;letter-spacing:-.04em;margin:0}
+.generator-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.generator-nav a{border-radius:7px;padding:6px 9px;color:var(--text);text-decoration:none;font-weight:650;font-size:13px;white-space:nowrap}
+.generator-nav a:hover,.generator-nav a[aria-current]{background:var(--panel2);color:var(--accent)}
+.generator-nav a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 main{max-width:1480px;padding:22px;margin:auto;display:grid;grid-template-columns:minmax(300px,365px) minmax(360px,1fr);gap:18px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.controls{padding:23px}.label-head{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:2px 0 14px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:12px;color:#c4d7e4;font-weight:650}.inputWrap{position:relative}.field input,.field select{width:100%;height:42px;background:#0d1b2b;border:1px solid #355069;border-radius:8px;color:white;padding:8px 41px 8px 12px;font:600 17px system-ui;outline:none}.field select{font-size:14px;padding-right:10px}.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 2px #1a6f67}.unit{position:absolute;right:12px;top:10px;color:var(--muted);pointer-events:none}.divider{border-top:1px solid var(--line);margin:18px 0}.details{display:grid;grid-template-columns:1fr 1fr;gap:12px}.text-muted{color:var(--muted);font-size:12px}.row{display:flex;gap:12px;align-items:center}.row span{color:var(--muted)}
@@ -16,10 +20,18 @@ button{cursor:pointer;border:0;border-radius:9px;font:700 14px system-ui;padding
 .viewer{position:relative;min-height:460px;background:radial-gradient(ellipse at 57% 36%,#21374c 0%,#112032 52%,#0d192a 100%)}#view{width:100%;height:460px;display:block;touch-action:none;cursor:grab}#view:active{cursor:grabbing}.view-top{position:absolute;top:17px;left:18px;right:18px;pointer-events:none;display:flex;justify-content:space-between;gap:12px}.view-top .view-name{font-size:13px;font-weight:700}.view-top .hint{color:var(--muted);font-size:12px}.view-bottom{position:absolute;bottom:15px;left:18px;right:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.stat{background:#081928cf;border:1px solid #355069;border-radius:7px;padding:8px 11px;font-size:12px}.stat strong{font-size:15px;display:block;color:white}.stat span{color:#99b1c5}
 .info{padding:19px 23px}.info h2{font-size:15px;margin:0 0 10px}.info p{font-size:13px;color:#b9cada;margin:8px 0}.info code{color:#91f1e4}.small{font-size:11px;color:var(--muted)}#console{font-size:12px;word-break:break-word;min-height:18px;color:#a9dbc9;margin-top:9px}footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-size:11px}
 @media(max-width:850px){main{grid-template-columns:1fr;padding:12px}.controls{padding:18px}header{padding:15px}#view{height:380px}.viewer{min-height:380px}.view-top .hint{display:none}}
+@media(max-width:480px){header{flex-wrap:wrap}}
 </style>
 </head>
 <body>
-<header><div><small>goBILDA · BioBuzz · CAD tool</small><h1>Shooter Scoop Generator</h1></div><div class="pill">Offline · Shareable settings</div></header>
+<header>
+  <div><small>goBILDA · BioBuzz · CAD tool</small><h1>Shooter Scoop Generator</h1></div>
+  <nav class="generator-nav" aria-label="Generators">
+    <a href="BioBuzz_Scoop_Generator.html" aria-current="page">Scoop</a>
+    <a href="BioBuzz-Fin-Studio.html">Fins</a>
+    <a href="FTC-Alliance-Plate.html">Alliance plates</a>
+  </nav>
+</header>
 <main>
 <section class="panel controls">
  <div class="label-head">01 / Scoop dimensions</div>
