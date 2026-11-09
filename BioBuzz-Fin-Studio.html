@@ -79,6 +79,18 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
 .view-actions button.secondary{font-size:12px;min-height:30px;padding:5px 8px}
 .view-actions button[aria-pressed=true]{background:var(--accent);color:#092626}
 .zoom-buttons button.secondary{min-width:28px}
+#edge-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#edge-overlay line{stroke:#ffce73;stroke-width:1.5}
+#edge-overlay text{fill:#ffe3aa;stroke:var(--bg);stroke-width:3;paint-order:stroke;font-size:12px;font-weight:700;text-anchor:middle}
+.edge-panel{padding:13px 18px;border-bottom:1px solid var(--line)}
+.edge-panel header{padding:0;border:0;justify-content:flex-start;flex-wrap:wrap}
+.edge-panel h2{margin:0;font-size:13px}
+.edge-panel select{background:#0d1b2b;color:var(--text);border:1px solid #355069;border-radius:6px;padding:3px 6px;font:inherit}
+.edge-panel dl{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0 0;font-size:12px}
+.edge-panel dl div{display:flex;gap:5px}
+.edge-panel dt{color:var(--muted)}
+.edge-panel dd{margin:0;font-weight:700}
+.settings-actions{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:360px){.view-tools{left:12px;right:12px}.view-actions button.secondary{padding:5px 6px}.view-bottom{left:12px;right:12px;gap:5px}.stat{padding:5px 8px}.stat dd{font-size:13px}}
 </style>
 </head>
@@ -122,8 +134,8 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
         <div class="range-labels small" aria-hidden="true"><span>10 mm</span><span>80 mm</span></div>
       </div>
     </div>
-    <p class="small" id="count-help">Every count includes the square mount and all eight screw holes.</p>
-    <p class="small"><span id="length-help">Length runs from the inside corner to the fin tip.</span> <span id="height-help">Height applies to the mount and fins.</span> <span id="thickness-help">The blades taper to the 2 mm mounting wall.</span></p>
+    <p class="small" id="count-help">Choose 0 for the square mount only. Choose 1–4 for the number of fins.</p>
+    <p class="small"><span id="length-help">Length runs from the inside corner to the fin tip.</span> <span id="height-help">Height is measured before adding extra material above the holes.</span> <span id="thickness-help">The blades taper to the 2 mm mounting wall.</span></p>
 
     <div class="divider"></div>
     <h2 class="label-head">02 / Tip cuts and roots</h2>
@@ -143,22 +155,34 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
 
     <div class="divider"></div>
     <h2 class="label-head">03 / Mounting</h2>
+    <div class="field">
+      <label for="extra-top-margin">Extra height above holes</label>
+      <div class="inputWrap"><input id="extra-top-margin" type="number" min="0" max="20" step="0.1" value="0" required aria-describedby="extra-top-margin-help"><span class="unit">mm</span></div>
+    </div>
+    <p class="small" id="extra-top-margin-help">Raises the top edge while keeping the hole row at its original height from the bottom.</p>
+    <label class="check" for="independent-fins"><input id="independent-fins" type="checkbox" aria-describedby="independent-fins-help">Independent fins</label>
+    <p class="small" id="independent-fins-help">Prints each selected fin flat with two mounting holes and a small gap at the corner where it meets its neighbor.</p>
+    <div class="divider"></div>
     <dl class="details">
       <dt>goBILDA mount SKU</dt><dd>1201-0043-0002</dd>
       <dt>Metal mount / fit clearance</dt><dd>43 mm / 0.2 mm per side</dd>
-      <dt>Mounting holes</dt><dd>8 × Ø4.4 mm for M4</dd>
+      <dt>Mounting holes</dt><dd id="hole-spec">8 × Ø4.4 mm for M4</dd>
       <dt>Hole spacing per side</dt><dd>32 mm on center</dd>
-      <dt>Wall / hole center below top</dt><dd>2.0 / 4.0 mm</dd>
+      <dt>Wall / hole center below top</dt><dd id="hole-margin">2.0 / 4.0 mm</dd>
     </dl>
     <p class="notice err" id="validation" role="status" hidden></p>
     <button class="primary" type="button" id="export">↓ Generate &amp; download STL</button>
     <p id="export-note" aria-live="polite">Binary STL · Model units are millimeters</p>
-    <button class="secondary" type="button" id="reset">Reset settings</button>
+    <div class="settings-actions">
+      <button class="secondary" type="button" id="export-settings">↓ Export settings JSON</button>
+      <button class="secondary" type="button" id="reset">Reset settings</button>
+    </div>
   </section>
 
   <section class="panel" aria-labelledby="preview-heading">
     <div class="viewer">
       <div id="viewport"></div>
+      <svg id="edge-overlay" aria-hidden="true"></svg>
       <div class="view-top">
         <h2 class="view-name" id="preview-heading">3D model preview</h2>
         <span class="hint">Drag to rotate · Scroll to zoom</span>
@@ -180,12 +204,20 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
       <dl class="view-bottom" aria-label="Generated dimensions">
         <div class="stat"><dt>Footprint</dt><dd id="footprint"></dd></div>
         <div class="stat"><dt>Sweep Ø</dt><dd id="sweep"></dd></div>
-        <div class="stat"><dt>Overall height</dt><dd id="overall"></dd></div>
+        <div class="stat"><dt id="overall-label">Overall height</dt><dd id="overall"></dd></div>
       </dl>
     </div>
+    <section class="edge-panel" id="fin-dimensions" aria-labelledby="edge-heading" hidden>
+      <header>
+        <h2 id="edge-heading">Fin edge dimensions</h2>
+        <label class="small" for="dimension-fin">Measure fin</label>
+        <select id="dimension-fin"><option value="1">Fin 1</option></select>
+      </header>
+      <dl id="edge-readout"></dl>
+    </section>
     <div class="info">
       <h2>Fit and assembly</h2>
-      <p>Slide the square opening over the metal mount from the post side with the screw holes nearest the servo. Check screw engagement with the Step 53 washers and confirm clearance through a full rotation before running the servo.</p>
+      <p>Slide the square opening over the metal mount from the post side, or bolt each independent fin to one side. Orient the screw holes nearest the servo. Check screw engagement with the Step 53 washers and confirm clearance through a full rotation.</p>
       <p><a href="https://www.gobilda.com/1201-series-quad-block-pattern-mount-43-2/" target="_blank" rel="noopener">Mount drawing ↗</a> · <a href="https://www.gobilda.com/content/user_manuals/3200-2627-0004_assembly-instructions.min.pdf#page=32" target="_blank" rel="noopener">Step 53 ↗</a></p>
     </div>
   </section>
@@ -228,8 +260,8 @@ function triangulateSector(polygon) {
   return result;
 }
 
-function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet}) {
-  const {halfOpening:a,wall,holeOffset,holeZ,holeRadius} = mount;
+function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet,separate,holeZ,start}) {
+  const {halfOpening:a,wall,holeOffset,holeRadius} = mount;
   const b = a+wall;
   const triangles = [];
   const add = (vertices,reverse=false) => triangles.push(reverse ? [vertices[0],vertices[2],vertices[1]] : vertices);
@@ -237,7 +269,7 @@ function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet
     add([p,q,r],reverse);
     add([p,r,s],reverse);
   };
-  const boundaries = receiveFillet ? [-a,-a+rootRadius,0,a,b] : [-a,0,a,b];
+  const boundaries = receiveFillet ? [start,start+rootRadius,0,a,b] : [start,0,a,b];
   const onWall = (p,v) => [p[0],v,p[1]];
 
   for (let i=0;i<boundaries.length-1;i++) {
@@ -271,6 +303,7 @@ function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet
       }
     } else if (u0===a) {
       // The previous panel fills the inside corner.
+      if (separate) quad(...corners.map(p => onWall(p,a)));
       quad(...corners.map(p => onWall(p,b)),true);
     } else {
       // The adjacent fillet fills the outer face of this strip.
@@ -321,13 +354,20 @@ function makePanel(tip,top,cutLength,cutDepth,thickness,{roundRoot,receiveFillet
   }
   const tipOuter = b+(thickness-wall);
   quad([tip,a,cutDepth],[tip,tipOuter,cutDepth],[tip,tipOuter,top],[tip,a,top]);
+  if (separate) quad([start,a,0],[start,a,top],[start,b,top],[start,b,0]);
   return triangles;
 }
 
-function makeRotor(length,height,finCount=4,cutLength=0,cutAngle=45,thickness=mount.wall,roundedRoots=false) {
+function makeRotor(length,height,finCount=4,cutLength=0,cutAngle=45,thickness=mount.wall,
+  roundedRoots=false,extraTopMargin=0,independentFins=false) {
   const {halfOpening:a,wall} = mount;
   const b = a+wall;
   const tip = finCount===0 ? b : a+length;
+  const top = height+extraTopMargin;
+  const holeZ = mount.holeZ+extraTopMargin;
+  const separate = independentFins && finCount>0;
+  // Shorten the mounting end to clear its neighbor when bolted to the block.
+  const start = separate ? -a+.4 : -a;
   const cutDepth = cutLength ? cutLength*cutSlope(cutAngle) : 0;
   const rotations = [
     ([x,y,z]) => [x,y,z],
@@ -335,29 +375,46 @@ function makeRotor(length,height,finCount=4,cutLength=0,cutAngle=45,thickness=mo
     ([x,y,z]) => [-x,-y,z],
     ([x,y,z]) => [y,-x,z]
   ];
-  const faces = rotations.flatMap((rotate,index) => {
-    const hasFin = index<finCount;
-    const roundRoot = roundedRoots && hasFin;
-    const receiveFillet = roundedRoots && (index+1)%rotations.length<finCount;
-    const panel = hasFin
-      ? makePanel(tip,height,cutLength,cutDepth,thickness,{roundRoot,receiveFillet})
-      : makePanel(b,height,0,0,wall,{roundRoot,receiveFillet});
-    return panel.map(triangle => triangle.map(point => {
+  const transforms = separate
+    ? Array.from({length:finCount},(_,index) => {
+      const x=(index%2)*(tip-start+6)-start, y=Math.floor(index/2)*(top+6);
+      return ([u,v,z]) => [x+u,y+top-z,v-a];
+    })
+    : rotations.map(rotate => point => {
       const [x,y,z] = rotate(point);
       // Flip about X and return the bottom to Z=0.
-      return [x,-y,height-z];
-    }));
+      return [x,-y,top-z];
+    });
+  const faces = transforms.flatMap((transform,index) => {
+    const hasFin = index<finCount;
+    const roundRoot = !separate && roundedRoots && hasFin;
+    const receiveFillet = !separate && roundedRoots && (index+1)%rotations.length<finCount;
+    const options = {roundRoot,receiveFillet,separate,holeZ,start};
+    const panel = hasFin
+      ? makePanel(tip,top,cutLength,cutDepth,thickness,options)
+      : makePanel(b,top,0,0,wall,options);
+    return panel.map(triangle => triangle.map(transform));
   });
+  // Measure the planar side profile, including the tip bevel when present.
+  const profile = [[start,a,0],[tip-cutLength,a,0]];
+  const edgeLabels = ["Top"];
+  if (cutLength>0) {
+    profile.push([tip,a,cutDepth]);
+    edgeLabels.push("Diagonal");
+  }
+  profile.push([tip,a,top],[start,a,top]);
+  edgeLabels.push("Tip","Bottom","Mount end");
+  const profiles = transforms.slice(0,finCount).map(transform => profile.map(transform));
   const points = faces.flat();
-  const bounds = [0,1].map(axis => {
+  const bounds = [0,1,2].map(axis => {
     const values = points.map(p => p[axis]);
     return [Math.min(...values),Math.max(...values)];
   });
-  const footprint = bounds.map(([low,high]) => high-low);
-  const center = [...bounds.map(([low,high]) => (low+high)/2),height/2];
+  const [width,depth,printHeight] = bounds.map(([low,high]) => high-low);
+  const center = bounds.map(([low,high]) => (low+high)/2);
   const radius = Math.max(...points.map(p => Math.hypot(...minus(p,center))));
-  const sweep = 2*Math.max(...points.map(([x,y]) => Math.hypot(x,y)));
-  return {faces, footprint, center, radius, sweep, height};
+  const sweep = separate ? null : 2*Math.max(...points.map(([x,y]) => Math.hypot(x,y)));
+  return {faces,footprint:[width,depth],center,radius,sweep,height:top,printHeight,profiles,edgeLabels};
 }
 
 function makeBinarySTL(faces) {
@@ -550,6 +607,52 @@ function canvasRenderer(context) {
 
 const gl = canvas.getContext("webgl",{alpha:true,antialias:true});
 const renderer = gl ? webGLRenderer(gl) : canvasRenderer(canvas.getContext("2d"));
+const edgeOverlay = el("edge-overlay");
+const dimensionFin = el("dimension-fin");
+function measuredEdges() {
+  const profile = model.profiles[(Number(dimensionFin.value)||1)-1];
+  if (!profile) return [];
+  return profile.map((start,i) => {
+    const end=profile[(i+1)%profile.length];
+    return {start,end,label:model.edgeLabels[i],length:Math.hypot(...minus(end,start))};
+  });
+}
+function paintDimensions(view,width,height) {
+  const project = point => {
+    const p=minus(point,model.center);
+    return [width/2+dot(p,view.right)*view.pixels,height/2-dot(p,view.up)*view.pixels];
+  };
+  const edges=measuredEdges().map(({start,end,length}) => ({a:project(start),b:project(end),length}));
+  edgeOverlay.setAttribute("viewBox","0 0 "+width+" "+height);
+  if (!edges.length) {
+    edgeOverlay.innerHTML="";
+    return;
+  }
+  const middle=edges.reduce(([x,y],{a})=>[x+a[0]/edges.length,y+a[1]/edges.length],[0,0]);
+  const labels=[];
+  const lines=edges.map(({a,b,length}) => {
+    const [ax,ay]=a, [bx,by]=b;
+    if (Math.hypot(bx-ax,by-ay)<2) return "";
+    const mx=(ax+bx)/2, my=(ay+by)/2;
+    const outward=[mx-middle[0],my-middle[1]];
+    const offset=14/(Math.hypot(...outward)||1);
+    const x=mx+outward[0]*offset, y=my+outward[1]*offset;
+    if (x>29 && x<width-29 && y>84 && y<height-86 &&
+        !labels.some(label=>Math.abs(x-label.x)<62 && Math.abs(y-label.y)<18)) {
+      labels.push({x,y,length});
+    }
+    return '<line x1="'+ax+'" y1="'+ay+'" x2="'+bx+'" y2="'+by+'"/>';
+  });
+  edgeOverlay.innerHTML=lines.join("")+labels.map(({x,y,length}) =>
+    '<text x="'+x+'" y="'+y+'">'+formatted(length)+' mm</text>').join("");
+}
+function refreshEdgeReadout() {
+  el("edge-readout").innerHTML=measuredEdges().map(({label,length}) =>
+    "<div><dt>"+label+"</dt><dd>"+formatted(length)+" mm</dd></div>").join("");
+  redraw();
+}
+dimensionFin.addEventListener("change",refreshEdgeReadout);
+
 function paint() {
   frame = undefined;
   if (!model) return;
@@ -563,7 +666,10 @@ function paint() {
   const eye = [Math.cos(azimuth)*Math.cos(elevation),Math.sin(azimuth)*Math.cos(elevation),Math.sin(elevation)];
   const right = [-Math.sin(azimuth),Math.cos(azimuth),0];
   const {radius} = model;
-  renderer.draw({eye,right,up:cross(eye,right),radius,pixels:.45*Math.min(width,height)*zoom/radius});
+  const up=cross(eye,right);
+  const pixels=.45*Math.min(width,height)*zoom/radius;
+  renderer.draw({eye,right,up,radius,pixels});
+  paintDimensions({right,up,pixels:pixels/ratio},width/ratio,height/ratio);
 }
 
 function redraw() {
@@ -636,6 +742,8 @@ const controls = [
 const countInput = el("fin-count");
 const thicknessInput = el("thickness");
 const roundedRootsInput = el("rounded-roots");
+const extraTopMarginInput = el("extra-top-margin");
+const independentFinsInput = el("independent-fins");
 const cutLengthInput = el("cut-length");
 const cutAngleInput = el("cut-angle");
 const finFields = [
@@ -643,23 +751,27 @@ const finFields = [
   {label:"tip cut length",number:cutLengthInput},
   {label:"tip cut angle",number:cutAngleInput,unit:"°"}
 ];
-const fields = [...controls,...finFields];
+const fields = [...controls,...finFields,{label:"extra height above holes",number:extraTopMarginInput}];
 const exportButton = el("export");
+const settingsExportButton = el("export-settings");
 const exportNote = el("export-note");
 const fileNote = "Binary STL · Model units are millimeters";
 const formatted = n => n.toFixed(1);
-let dimensions;
+let settings;
 
 function update() {
   const finCount = Number(countInput.value);
   const mountOnly = finCount===0;
+  const separate = independentFinsInput.checked && !mountOnly;
   for (const {key,number,slider} of controls) number.disabled=slider.disabled=mountOnly && key==="length";
   for (const {number} of finFields) number.disabled=mountOnly;
-  roundedRootsInput.disabled=mountOnly;
+  independentFinsInput.disabled=mountOnly;
+  roundedRootsInput.disabled=mountOnly || separate;
   cutLengthInput.max="";
-  if (!mountOnly && controls.every(({number}) => number.validity.valid) && cutAngleInput.validity.valid) {
+  if (!mountOnly && controls.every(({number}) => number.validity.valid) &&
+      extraTopMarginInput.validity.valid && cutAngleInput.validity.valid) {
     const availableLength = el("length").valueAsNumber-mount.wall-.1;
-    const availableDepth = el("height").valueAsNumber-.1;
+    const availableDepth = el("height").valueAsNumber+extraTopMarginInput.valueAsNumber-.1;
     const limit = Math.min(availableLength,availableDepth/cutSlope(cutAngleInput.valueAsNumber));
     cutLengthInput.max=(Math.floor(10*limit+1e-9)/10).toFixed(1);
   }
@@ -667,7 +779,7 @@ function update() {
   const message = el("validation");
   for (const field of fields) field.number.setAttribute("aria-invalid",String(invalid.includes(field)));
   message.hidden = invalid.length===0;
-  exportButton.disabled = invalid.length>0;
+  exportButton.disabled=settingsExportButton.disabled=invalid.length>0;
   exportNote.textContent = fileNote;
   if (invalid.length) {
     message.textContent = invalid.map(({label,number,unit=" mm"}) => {
@@ -676,18 +788,28 @@ function update() {
     }).join(" ");
     return;
   }
-  dimensions = Object.fromEntries(controls.map(({key,number}) => [key,number.valueAsNumber]));
-  const cutLength = mountOnly ? 0 : cutLengthInput.valueAsNumber;
-  const thickness = mountOnly ? mount.wall : thicknessInput.valueAsNumber;
-  model=makeRotor(dimensions.length,dimensions.height,finCount,cutLength,
-    cutAngleInput.valueAsNumber,thickness,roundedRootsInput.checked);
+  const value = input => Number.isFinite(input.valueAsNumber) ? input.valueAsNumber : Number(input.defaultValue);
+  settings = {
+    finCount, length:value(el("length")), height:value(el("height")), thickness:value(thicknessInput),
+    cutLength:value(cutLengthInput), cutAngle:value(cutAngleInput), roundedRoots:roundedRootsInput.checked,
+    extraTopMargin:value(extraTopMarginInput), independentFins:independentFinsInput.checked
+  };
+  model=makeRotor(settings.length,settings.height,finCount,mountOnly ? 0 : settings.cutLength,
+    settings.cutAngle,settings.thickness,settings.roundedRoots,settings.extraTopMargin,separate);
   edges=getEdges(model.faces);
   grid=makeGrid(model);
   renderer.update();
   el("footprint").textContent=model.footprint.map(formatted).join(" × ")+" mm";
-  el("sweep").textContent=formatted(model.sweep)+" mm";
-  el("overall").textContent=formatted(model.height)+" mm";
-  redraw();
+  el("sweep").textContent=separate ? "—" : formatted(model.sweep)+" mm";
+  el("overall-label").textContent=separate ? "Print height" : "Overall height";
+  el("overall").textContent=formatted(model.printHeight)+" mm";
+  el("hole-spec").textContent=(separate ? 2*finCount : 8)+" × Ø4.4 mm for M4";
+  el("hole-margin").textContent=formatted(mount.wall)+" / "+formatted(mount.holeZ+settings.extraTopMargin)+" mm";
+  el("fin-dimensions").hidden=mountOnly;
+  const selected=Math.min(Number(dimensionFin.value)||1,finCount);
+  dimensionFin.innerHTML=model.profiles.map((_,i)=>'<option value="'+(i+1)+'">Fin '+(i+1)+'</option>').join("");
+  dimensionFin.value=String(selected);
+  refreshEdgeReadout();
 }
 
 for (const {number,slider} of controls) {
@@ -702,35 +824,52 @@ for (const {number,slider} of controls) {
 }
 countInput.addEventListener("change",update);
 roundedRootsInput.addEventListener("change",update);
+independentFinsInput.addEventListener("change",update);
+extraTopMarginInput.addEventListener("input",update);
 for (const {number} of finFields) number.addEventListener("input",update);
 el("reset").addEventListener("click",() => {
   countInput.value="4";
   for (const {key,number,slider} of controls) number.value=slider.value=defaults[key];
   for (const {number} of finFields) number.value=number.defaultValue;
   roundedRootsInput.checked=roundedRootsInput.defaultChecked;
+  extraTopMarginInput.value=extraTopMarginInput.defaultValue;
+  independentFinsInput.checked=independentFinsInput.defaultChecked;
   update();
 });
 
-exportButton.addEventListener("click",() => {
-  if (exportButton.disabled) return;
-  const blob = new Blob([makeBinarySTL(model.faces)],{type:"application/octet-stream"});
+function downloadFile(blob,filename) {
   const link = document.createElement("a");
   link.href=URL.createObjectURL(blob);
-  const finCount = Number(countInput.value);
-  const partName = ["mount-fit","one-fin","two-fin","three-fin","four-fin"][finCount];
-  const lengthTag = finCount ? "-L"+dimensions.length : "";
-  const thickness = thicknessInput.valueAsNumber;
-  const thicknessTag = finCount && thickness!==mount.wall ? "-T"+thickness : "";
-  const cutLength = cutLengthInput.valueAsNumber;
-  const cutTag = finCount && cutLength ? "-C"+cutLength+"-A"+cutAngleInput.valueAsNumber : "";
-  const rootTag = finCount && roundedRootsInput.checked ? "-rounded" : "";
-  link.download="biobuzz-"+partName+lengthTag+"-H"+model.height+thicknessTag+cutTag+rootTag+".stl";
+  link.download=filename;
   document.body.append(link);
   link.click();
   link.remove();
   const url=link.href;
   setTimeout(() => URL.revokeObjectURL(url),30000);
+}
+function modelName() {
+  const {finCount,length,thickness,cutLength,cutAngle,roundedRoots,extraTopMargin,independentFins}=settings;
+  const partName=["mount-fit","one-fin","two-fin","three-fin","four-fin"][finCount];
+  const separate=independentFins && finCount>0;
+  const lengthTag=finCount ? "-L"+length : "";
+  const thicknessTag=finCount && thickness!==mount.wall ? "-T"+thickness : "";
+  const cutTag=finCount && cutLength ? "-C"+cutLength+"-A"+cutAngle : "";
+  const marginTag=extraTopMargin ? "-M"+extraTopMargin : "";
+  const modeTag=separate ? "-independent" : finCount && roundedRoots ? "-rounded" : "";
+  return "biobuzz-"+partName+lengthTag+"-H"+Number(formatted(model.height))+thicknessTag+cutTag+marginTag+modeTag;
+}
+exportButton.addEventListener("click",() => {
+  if (exportButton.disabled) return;
+  const blob=new Blob([makeBinarySTL(model.faces)],{type:"application/octet-stream"});
+  downloadFile(blob,modelName()+".stl");
   exportNote.textContent="STL exported · "+model.faces.length.toLocaleString()+" triangles";
+});
+settingsExportButton.addEventListener("click",() => {
+  if (settingsExportButton.disabled) return;
+  const payload={format:"biobuzz-fin-settings",schemaVersion:1,units:"mm",exportedAt:new Date().toISOString(),settings};
+  const blob=new Blob([JSON.stringify(payload,null,2)+"\n"],{type:"application/json"});
+  downloadFile(blob,modelName()+"-settings.json");
+  exportNote.textContent="Settings JSON exported.";
 });
 setView("iso");
 update();

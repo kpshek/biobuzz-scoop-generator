@@ -11,14 +11,15 @@ const example = name => JSON.parse(fs.readFileSync(path.join(root, 'examples', n
 
 // Run the complete application script without modifying its private functions.
 // Capture the same downloaded Blobs and file-input events used by the browser.
-function openApp() {
+function openApp(gl = null) {
   const controls = new Map(), downloads = [], blobs = new Map(), timers = [];
   const drawing = new Proxy({}, { get: () => () => {} });
   const element = () => ({
     value: '', min: '', max: '', options: [], files: [], textContent: '',
-    classList: { toggle() {} }, listeners: {},
+    classList: { toggle() {} }, listeners: {}, attributes: {},
+    setAttribute(name, value) { this.attributes[name] = value; },
     addEventListener(event, handler) { this.listeners[event] = handler; },
-    getContext(type) { return type === '2d' ? drawing : null; },
+    getContext(type) { return type === '2d' ? drawing : gl; },
     clientWidth: 800, clientHeight: 460,
     setPointerCapture() {}, click() {}, remove() {}
   });
@@ -59,8 +60,8 @@ function openApp() {
   assert.equal(controls.get('download').disabled, false, 'default configuration must load');
   return {
     controls, downloads,
-    async fire(id, event) {
-      await controls.get(id).listeners[event]();
+    async fire(id, event, details) {
+      await controls.get(id).listeners[event](details);
       while (timers.length) await timers.shift()();
     },
     async import(doc) {
@@ -76,6 +77,36 @@ function openApp() {
     }
   };
 }
+
+test('scoop camera presets, zoom and keyboard orbit keep the preview interactive', async () => {
+  const draws = [], uniforms = {};
+  const gl = new Proxy({
+    LINES:1, TRIANGLES:4,
+    getShaderParameter:()=>true, getProgramParameter:()=>true, getUniformLocation:(_program,name)=>name,
+    uniform1f(name,value) { uniforms[name]=value; },
+    drawArrays(mode,_start,count) { draws.push([mode,count]); }
+  }, { get:(target,key) => target[key] ?? (()=>{}) });
+  const app = openApp(gl);
+  assert.deepEqual(draws.slice(-2).map(([mode])=>mode),[gl.LINES,gl.TRIANGLES]);
+  assert.ok(draws.at(-2)[1]>0,'the grid includes line vertices');
+  await app.fire('view-top', 'click');
+  assert.equal(app.controls.get('view-label').textContent, 'Top · XY');
+  assert.equal(app.controls.get('view-top').attributes['aria-pressed'], 'true');
+  assert.equal(uniforms.u_pitch,Math.PI/2);
+  const scale=uniforms.u_scale;
+  await app.fire('zoom-in', 'click');
+  assert.ok(uniforms.u_scale<scale);
+  await app.fire('zoom-out', 'click');
+  assert.ok(Math.abs(uniforms.u_scale-scale)<1e-9);
+  await app.fire('view-side', 'click');
+  assert.equal(app.controls.get('view-label').textContent, 'Side · XZ');
+  let prevented = false;
+  await app.fire('view', 'keydown', { key: 'ArrowRight', preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(app.controls.get('view-label').textContent, 'Free orbit');
+  await app.fire('view', 'keydown', { key: 'Home', preventDefault() {} });
+  assert.equal(app.controls.get('view-iso').attributes['aria-pressed'], 'true');
+});
 
 test('all 15 settings export, import, and round trip', async () => {
   const app = openApp();
