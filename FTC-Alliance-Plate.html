@@ -6,96 +6,122 @@
 <meta name="description" content="Make red and blue FTC robot signs with your team number and download printable STL files.">
 <title>BioBuzz Part Studio · FTC Alliance Plates</title>
 <style>
-:root{color-scheme:light;--ink:#122b35;--muted:#4d6570;--line:#d5e0df;--paper:#f4f7f5;--teal:#075e59;--mint:#dcf4e9;--dark:#101e28;--mono:ui-monospace,SFMono-Regular,Consolas,monospace;--red:#bc202e;--blue:#1453ba}
+:root{color-scheme:dark;--bg:#0b1320;--panel:#142235;--panel2:#172a40;--line:#2d455c;--text:#eef5fa;--muted:#93a8bd;--accent:#38d2ba;--err:#ff8587}
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.48 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-button,input{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.48;cursor:default}
-button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #149684;outline-offset:3px}
-a{color:var(--teal);text-underline-offset:3px}
-.top{border-bottom:1px solid var(--line);background:#fff}
-.top-inner,main{width:min(1280px,calc(100% - 64px));margin:auto}
-.top-inner{min-height:66px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:750}
-.brand-mark{width:34px;height:34px;display:grid;place-items:center;background:var(--teal);border-radius:9px;color:white}
-.brand-mark svg{width:22px;height:22px}
-nav{display:flex;align-items:center;gap:6px}
-nav a{border-radius:7px;padding:6px 9px;text-decoration:none;font-weight:650;font-size:13px;white-space:nowrap}
-nav a:hover{background:#edf4f2}
-nav a[aria-current]{background:var(--mint)}
-main{padding:32px 0 24px}
-.eyebrow,.badge,.metric-label,.alliance-label{font:700 11px/1.35 var(--mono);letter-spacing:.075em;text-transform:uppercase}
-.eyebrow{margin:0 0 8px;color:var(--teal)}
-h1{font-size:clamp(38px,4.3vw,61px);line-height:1.04;letter-spacing:-.062em;margin:0;font-weight:760}
-.intro{margin:12px 0 25px;color:var(--muted)}
-.layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(320px,1fr);gap:20px;align-items:start}
-.card{border:1px solid var(--line);border-radius:16px;background:white;overflow:hidden}
-.preview{background:var(--dark);color:#eaf6f7;border-color:#263c45}
-.preview-head{padding:14px 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #2b424b}
-h2{font-size:17px;letter-spacing:-.025em;line-height:1.25;margin:0}
-.preview-head h2{display:flex;align-items:center;gap:9px}
-.dot{width:7px;height:7px;border-radius:50%;background:#65dfbc;box-shadow:0 0 10px #65dfbc80}
-.badge{padding:5px 7px;border:1px solid #39545f;border-radius:5px;color:#c4dbe0;letter-spacing:.045em;white-space:nowrap}
-.stage{display:grid;gap:20px;padding:23px clamp(15px,4vw,58px) 27px;background:radial-gradient(ellipse at 50% 42%,#213a44 0,#14262e 61%,#101d26 100%)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{padding:18px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+header small{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:10px;color:var(--accent);font-weight:800}
+h1{font-size:21px;letter-spacing:-.04em;margin:0}
+.generator-nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.generator-nav a{border-radius:7px;padding:6px 9px;color:var(--text);text-decoration:none;font-weight:650;font-size:13px;white-space:nowrap}
+.generator-nav a:hover,.generator-nav a[aria-current]{background:var(--panel2);color:var(--accent)}
+a{color:#91f1e4;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,canvas:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+main{max-width:1480px;padding:22px;margin:auto;display:grid;grid-template-columns:minmax(300px,365px) minmax(360px,1fr);gap:18px;align-items:start}
+.panel{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.controls{padding:23px}
+.label-head{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800;margin:2px 0 14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:12px;color:#c4d7e4;font-weight:650}
+.inputWrap{position:relative}
+.field input:not([type=range]),.field select{width:100%;height:42px;background:#0d1b2b;border:1px solid #355069;border-radius:8px;color:white;padding:8px 12px;font:600 17px system-ui}
+.field .inputWrap input:not([type=range]){padding-right:41px}
+.field select{font-size:14px;padding-right:10px}
+.field input:not([type=range]):focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px #1a6f67}
+.field input[aria-invalid=true]{border-color:var(--err)}
+.field input:disabled,.field select:disabled{opacity:.55}
+.unit{position:absolute;right:12px;top:10px;color:var(--muted);pointer-events:none}
+.divider{border-top:1px solid var(--line);margin:18px 0}
+.small{font-size:11px;color:var(--muted)}
+.controls p.small{margin:9px 0 0}
+button{cursor:pointer;border:0;border-radius:9px;font:700 14px system-ui;padding:12px 14px;transition:background .2s}
+button.primary{width:100%;background:var(--accent);color:#092626;margin-top:15px}
+button.primary:hover:enabled{background:#8cebdc}
+button:disabled{cursor:not-allowed;opacity:.5}
+button.secondary{background:#25405b;color:#e6f7f5;padding:8px 12px}
+button.secondary:hover:enabled{background:#3a5a72}
+.notice{padding:11px 12px;background:#112b34;border-left:3px solid var(--accent);border-radius:5px;font-size:12px;margin:13px 0 0}
+.notice.err{background:#391e27;border-left-color:var(--err);color:#ffbfc2}
+.details{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px;margin:0;font-size:12px}
+.details dt{color:var(--muted)}
+.details dd{margin:0;text-align:right}
+.viewer{position:relative;min-height:460px;background:radial-gradient(ellipse at 57% 36%,#21374c 0%,#112032 52%,#0d192a 100%)}
+.view-top{position:absolute;top:17px;left:18px;right:18px;pointer-events:none;display:flex;justify-content:space-between;gap:12px}
+.view-name{font-size:13px;font-weight:700;margin:0}
+.hint{color:var(--muted);font-size:12px}
+.view-bottom{position:absolute;bottom:15px;left:18px;right:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0;pointer-events:none}
+.stat{display:flex;flex-direction:column;background:#081928cf;border:1px solid #355069;border-radius:7px;padding:8px 11px;font-size:12px}
+.stat dt{color:#99b1c5}
+.stat dd{order:-1;font-size:15px;font-weight:700;margin:0;color:white}
+.info{padding:19px 23px}
+.info h2{font-size:15px;margin:0 0 10px}
+.info h2:not(:first-child){margin-top:16px}
+.info p{font-size:13px;color:#b9cada;margin:8px 0}
+.info code{color:#91f1e4}
+footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-size:11px}
+@media(max-width:850px){main{grid-template-columns:minmax(0,1fr);padding:12px}.controls{padding:18px}header{padding:15px}.viewer{min-height:380px}.view-top .hint{display:none}}
+@media(max-width:480px){header{flex-wrap:wrap}}
+:root{--red:#bc202e;--blue:#1453ba}
+#status[data-error]{background:#391e27;border-left-color:var(--err);color:#ffbfc2}
+.download-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.download-actions button{margin-top:0;padding:12px 8px}
+.plate-viewer{display:grid;place-items:center;padding:45px 18px 82px}
+.plate-previews{display:grid;gap:15px;width:min(100%,610px)}
 .sample{margin:0;min-width:0}
-.alliance-label{display:flex;align-items:center;gap:7px;margin:0 0 8px;color:#c8dbe1}
+.alliance-label{display:flex;justify-content:center;align-items:center;gap:7px;margin:0 0 6px;color:#c4d7e4;font-size:12px;font-weight:650}
 .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--alliance)}
-.sign{display:block;width:100%;max-height:168px;filter:drop-shadow(0 4px 3px #0006)}
+.sign{display:block;width:100%;height:clamp(88px,15vw,140px);filter:drop-shadow(0 4px 3px #0006)}
 .sign .base{fill:var(--alliance)}
 .sign .digits{fill:#fff;fill-rule:evenodd}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);margin:0;border-top:1px solid #2b424b;background:#142630}
-.metrics div{padding:12px 14px}
-.metrics div+div{border-left:1px solid #2b424b}
-.metric-label{color:#b5cbd2;letter-spacing:.045em;font-size:10px}
-.metrics dd{font:650 15px/1.35 var(--mono);margin:5px 0 0;white-space:nowrap}
-.config{padding:20px 21px}
-.config h2{margin-bottom:15px}
-label{display:block;font-weight:720;margin:0 0 5px}
-input{width:100%;padding:10px 12px;color:var(--ink);background:#fbfefd;border:1px solid #b9cece;border-radius:8px;font:700 18px/1.3 var(--mono);letter-spacing:.07em}
-input[aria-invalid=true]{border-color:#a5262b}
-.help,.status{margin:7px 0 0;font-size:12px;color:var(--muted)}
-.status[data-error]{color:#9c252b}
-.spec{background:#f2f7f6;border:1px solid #dde9e6;border-radius:10px;padding:11px 12px;margin:16px 0}
-.spec dl{margin:0}
-.spec dl div{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-size:12px}
-.spec dl div+div{margin-top:4px}
-.spec dt{color:var(--muted)}
-.spec dd{margin:0;text-align:right;font:650 11px/1.35 var(--mono)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.download{padding:9px 8px;min-height:43px;border:1px solid transparent;border-radius:8px;background:var(--alliance);color:white;font-size:13px;font-weight:740}
-.download:hover:enabled{filter:brightness(.87)}
-.print-note{margin:10px 0 0;font-size:12px;color:var(--muted)}
-.notes{margin-top:17px;padding:15px 17px;display:flex;justify-content:space-between;align-items:start;gap:18px;font-size:13px;color:var(--muted)}
-.notes h2{font-size:14px;color:var(--ink);margin-bottom:4px}
-.notes p{margin:0;max-width:79ch}
-.notes a{white-space:nowrap;font-size:12px}
-@media(max-width:890px){.top-inner,main{width:calc(100% - 36px)}.layout{grid-template-columns:1fr;gap:15px}.notes{flex-direction:column;gap:7px}.intro{margin-bottom:19px}}
-@media(max-width:480px){.top-inner,main{width:calc(100% - 24px)}.top-inner{min-height:55px}.config{padding:17px}.preview-head{padding:12px}.metrics div{padding:10px 7px}.metrics dd{font-size:12px}.metric-label{font-size:9px}main{padding-top:24px}}
+@media(max-width:360px){.view-bottom{left:12px;right:12px;gap:5px}.stat{padding:5px 8px}.stat dd{font-size:13px}}
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="top-inner">
-    <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h12M16 8v12M16 16H4M8 16V4"/><circle cx="12" cy="12" r="1"/></svg></span>BioBuzz Part Studio</div>
-    <nav aria-label="Generators">
-      <a href="BioBuzz_Scoop_Generator.html">Scoop</a>
-      <a href="BioBuzz-Fin-Studio.html">Fins</a>
-      <a href="FTC-Alliance-Plate.html" aria-current="page">Alliance plates</a>
-    </nav>
-  </div>
+<header>
+  <div><small>FIRST Tech Challenge · BioBuzz · CAD tool</small><h1>FTC Alliance Plate Generator</h1></div>
+  <nav class="generator-nav" aria-label="Generators">
+    <a href="BioBuzz_Scoop_Generator.html">Scoop</a>
+    <a href="BioBuzz-Fin-Studio.html">Fins</a>
+    <a href="FTC-Alliance-Plate.html" aria-current="page">Alliance plates</a>
+  </nav>
 </header>
 <main>
-  <p class="eyebrow">FIRST Tech Challenge · BIOBUZZ</p>
-  <h1>FTC alliance plates</h1>
-  <p class="intro">Create a matching pair of red and blue robot signs with your team number.</p>
-  <div class="layout">
-    <section class="card preview" aria-labelledby="preview-heading">
-      <div class="preview-head">
-        <h2 id="preview-heading"><span class="dot"></span>Plate preview</h2>
-        <span class="badge" id="preview-label">Example</span>
+  <section class="panel controls" aria-labelledby="config-heading">
+    <h2 class="label-head" id="config-heading">01 / Team number</h2>
+    <div class="field">
+      <label for="team">Team number</label>
+      <input id="team" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" spellcheck="false" placeholder="e.g. 21001" aria-describedby="team-help status">
+    </div>
+    <p class="small" id="team-help">Digits 0–9 only. The plate widens automatically to fit.</p>
+    <p class="notice" id="status" role="status">Loading the installed Arial Bold font…</p>
+
+    <div class="divider"></div>
+    <h2 class="label-head">02 / Plate dimensions</h2>
+    <dl class="details">
+      <dt>Minimum width</dt><dd>165 mm</dd>
+      <dt>Height</dt><dd>69 mm</dd>
+      <dt>Lettering</dt><dd>Arial Bold · 57 mm</dd>
+      <dt>Background margin</dt><dd id="margin">At least 6 mm</dd>
+      <dt>Base / raised digits</dt><dd>2.4 / 0.8 mm</dd>
+    </dl>
+
+    <div class="divider"></div>
+    <h2 class="label-head">03 / Download STL</h2>
+    <div class="download-actions">
+      <button class="primary" type="button" data-color="red" disabled>↓ Red STL</button>
+      <button class="primary" type="button" data-color="blue" disabled>↓ Blue STL</button>
+    </div>
+    <p class="small">STL dimensions are in millimeters. Use the corresponding alliance color for the base.</p>
+  </section>
+
+  <section class="panel" aria-labelledby="preview-heading">
+    <div class="viewer plate-viewer">
+      <div class="view-top">
+        <h2 class="view-name" id="preview-heading">Plate preview</h2>
+        <span class="small" id="preview-label">Example</span>
       </div>
-      <div class="stage">
+      <div class="plate-previews">
         <figure class="sample" style="--alliance:var(--red)">
           <figcaption class="alliance-label"><span class="swatch"></span>Red alliance</figcaption>
           <svg class="sign" viewBox="0 0 165 69" role="img" aria-label="Red alliance plate"><rect class="base" width="100%" height="100%"/><path class="digits"/></svg>
@@ -105,40 +131,22 @@ input[aria-invalid=true]{border-color:#a5262b}
           <svg class="sign" viewBox="0 0 165 69" role="img" aria-label="Blue alliance plate"><rect class="base" width="100%" height="100%"/><path class="digits"/></svg>
         </figure>
       </div>
-      <dl class="metrics" aria-label="Plate dimensions">
-        <div><dt class="metric-label">Width</dt><dd id="width">165 mm</dd></div>
-        <div><dt class="metric-label">Height</dt><dd id="height">69 mm</dd></div>
-        <div><dt class="metric-label">Digit height</dt><dd>57 mm</dd></div>
+      <dl class="view-bottom" aria-label="Plate dimensions">
+        <div class="stat"><dt>Width</dt><dd id="width">165 mm</dd></div>
+        <div class="stat"><dt>Height</dt><dd id="height">69 mm</dd></div>
+        <div class="stat"><dt>Digit height</dt><dd>57 mm</dd></div>
       </dl>
-    </section>
-    <section class="card config" aria-labelledby="config-heading">
-      <h2 id="config-heading">Customize the signs</h2>
-      <label for="team">Team number</label>
-      <input id="team" type="text" inputmode="numeric" pattern="[0-9]+" autocomplete="off" spellcheck="false" placeholder="e.g. 21001" aria-describedby="team-help status">
-      <p class="help" id="team-help">Digits 0–9 only. The plate widens automatically to fit.</p>
-      <p class="status" id="status" role="status">Loading the installed Arial Bold font…</p>
-      <div class="spec">
-        <dl>
-          <div><dt>Lettering</dt><dd>Arial Bold · 57 mm</dd></div>
-          <div><dt>Background margin</dt><dd id="margin">At least 6 mm</dd></div>
-          <div><dt>Base / raised digits</dt><dd>2.4 / 0.8 mm</dd></div>
-        </dl>
-      </div>
-      <div class="actions">
-        <button class="download" type="button" data-color="red" style="--alliance:var(--red)" disabled>Download red STL</button>
-        <button class="download" type="button" data-color="blue" style="--alliance:var(--blue)" disabled>Download blue STL</button>
-      </div>
-      <p class="print-note">STL stores geometry. In your slicer, start with opaque red or blue and change to opaque white at the first raised-digit layer, above the 2.4 mm base.</p>
-    </section>
-  </div>
-  <section class="card notes" aria-labelledby="rules-heading">
-    <div>
-      <h2 id="rules-heading">Competition setup</h2>
-      <p id="rules-note">The plate is 69 mm tall to fit 57 mm digits with 6 mm above and below. Print two copies of each alliance color. Install two matching signs on robot surfaces at least 90° apart, where field staff can see them.</p>
     </div>
-    <a href="https://ftc-resources.firstinspires.org/ftc/archive/2027/game/cm-html" target="_blank" rel="noopener">FTC rules R401–R403 ↗</a>
+    <div class="info">
+      <h2>How to print</h2>
+      <p>Start with opaque red or blue filament. In your slicer, switch to opaque white at the first raised-digit layer, above the 2.4 mm base.</p>
+      <h2>Competition setup</h2>
+      <p id="rules-note">The plate is 69 mm tall to fit 57 mm digits with 6 mm above and below. Print two copies of each alliance color. Install two matching signs on robot surfaces at least 90° apart, where field staff can see them.</p>
+      <p><a href="https://ftc-resources.firstinspires.org/ftc/archive/2027/game/cm-html" target="_blank" rel="noopener">FTC rules R401–R403 ↗</a></p>
+    </div>
   </section>
 </main>
+<footer>Alliance plates · 57 mm Arial Bold digits · 6 mm minimum background margin</footer>
 <script id="earcut">
 /* Mapbox Earcut 3.0.2
 ISC License
