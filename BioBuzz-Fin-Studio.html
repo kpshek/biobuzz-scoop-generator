@@ -111,10 +111,10 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
         <label for="fin-count">Fin count</label>
         <select id="fin-count" aria-describedby="count-help">
           <option value="0">0 · Mount only</option>
-          <option value="1">1 · Single fin</option>
+          <option value="1" selected>1 · Single fin</option>
           <option value="2">2 · Adjacent fins</option>
           <option value="3">3 · Adjacent fins</option>
-          <option value="4" selected>4 · Full rotor</option>
+          <option value="4">4 · Full rotor</option>
         </select>
       </div>
       <div class="field">
@@ -123,14 +123,14 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
       </div>
       <div class="field">
         <label for="length">Fin length</label>
-        <div class="inputWrap"><input id="length" type="number" min="5" max="120" step="0.1" value="55" required aria-describedby="length-help"><span class="unit">mm</span></div>
-        <input id="length-slider" type="range" min="5" max="120" step="0.1" value="55" aria-label="Fin length in millimeters">
+        <div class="inputWrap"><input id="length" type="number" min="5" max="120" step="0.1" value="52" required aria-describedby="length-help"><span class="unit">mm</span></div>
+        <input id="length-slider" type="range" min="5" max="120" step="0.1" value="52" aria-label="Fin length in millimeters">
         <div class="range-labels small" aria-hidden="true"><span>5 mm</span><span>120 mm</span></div>
       </div>
       <div class="field">
         <label for="height">Fin and mount height</label>
-        <div class="inputWrap"><input id="height" type="number" min="10" max="80" step="0.1" value="40" required aria-describedby="height-help"><span class="unit">mm</span></div>
-        <input id="height-slider" type="range" min="10" max="80" step="0.1" value="40" aria-label="Fin and mount height in millimeters">
+        <div class="inputWrap"><input id="height" type="number" min="10" max="80" step="0.1" value="48" required aria-describedby="height-help"><span class="unit">mm</span></div>
+        <input id="height-slider" type="range" min="10" max="80" step="0.1" value="48" aria-label="Fin and mount height in millimeters">
         <div class="range-labels small" aria-hidden="true"><span>10 mm</span><span>80 mm</span></div>
       </div>
     </div>
@@ -142,25 +142,25 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
     <div class="grid2">
       <div class="field">
         <label for="cut-length">Tip cut length</label>
-        <div class="inputWrap"><input id="cut-length" type="number" min="0" step="0.1" value="0" required aria-describedby="cut-length-help"><span class="unit">mm</span></div>
+        <div class="inputWrap"><input id="cut-length" type="number" min="0" step="0.1" value="33" required aria-describedby="cut-length-help"><span class="unit">mm</span></div>
       </div>
       <div class="field">
         <label for="cut-angle">Tip cut angle</label>
-        <div class="inputWrap"><input id="cut-angle" type="number" min="1" max="89" step="0.1" value="45" required aria-describedby="cut-angle-help"><span class="unit">°</span></div>
+        <div class="inputWrap"><input id="cut-angle" type="number" min="1" max="89" step="0.1" value="35" required aria-describedby="cut-angle-help"><span class="unit">°</span></div>
       </div>
     </div>
     <p class="small"><span id="cut-length-help">Measure back from the tip along the top edge. Set length to 0 for a square corner.</span> <span id="cut-angle-help">Measure the angle down from the top edge.</span></p>
     <label class="check" for="rounded-roots"><input id="rounded-roots" type="checkbox" checked aria-describedby="rounded-roots-help">Rounded roots</label>
-    <p class="small" id="rounded-roots-help">Adds a 1.5 mm radius where each fin meets the mount.</p>
+    <p class="small" id="rounded-roots-help">Adds a 1.5 mm radius where each fin joins the square mount.</p>
 
     <div class="divider"></div>
     <h2 class="label-head">03 / Mounting</h2>
     <div class="field">
       <label for="extra-top-margin">Extra height above holes</label>
-      <div class="inputWrap"><input id="extra-top-margin" type="number" min="0" max="20" step="0.1" value="0" required aria-describedby="extra-top-margin-help"><span class="unit">mm</span></div>
+      <div class="inputWrap"><input id="extra-top-margin" type="number" min="0" max="20" step="0.1" value="5" required aria-describedby="extra-top-margin-help"><span class="unit">mm</span></div>
     </div>
     <p class="small" id="extra-top-margin-help">Raises the top edge while keeping the hole row at its original height from the bottom.</p>
-    <label class="check" for="independent-fins"><input id="independent-fins" type="checkbox" aria-describedby="independent-fins-help">Independent fins</label>
+    <label class="check" for="independent-fins"><input id="independent-fins" type="checkbox" checked aria-describedby="independent-fins-help">Independent fins</label>
     <p class="small" id="independent-fins-help">Prints each selected fin flat with two mounting holes and a small gap at the corner where it meets its neighbor.</p>
     <div class="divider"></div>
     <dl class="details">
@@ -222,12 +222,11 @@ footer{padding:0 24px 16px;max-width:1480px;margin:auto;color:var(--muted);font-
     </div>
   </section>
 </main>
-<footer>Design defaults · 4 fins · 55 mm extension × 40 mm height × 2 mm thickness</footer>
+<footer>Design defaults · 1 independent fin · 52 mm extension × 53 mm total height × 2 mm thickness</footer>
 <script id="geometry">
 "use strict";
 const mount = Object.freeze({ halfOpening:21.7, wall:2, holeOffset:16, holeZ:4, holeRadius:2.2 });
 const rootRadius = 1.5;
-const defaults = Object.freeze({length:55, height:40});
 const minus = (a,b) => a.map((value,i) => value-b[i]);
 const dot = (a,b) => a.reduce((sum,value,i) => sum+value*b[i],0);
 const cross = (a,b) => [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
@@ -828,8 +827,8 @@ independentFinsInput.addEventListener("change",update);
 extraTopMarginInput.addEventListener("input",update);
 for (const {number} of finFields) number.addEventListener("input",update);
 el("reset").addEventListener("click",() => {
-  countInput.value="4";
-  for (const {key,number,slider} of controls) number.value=slider.value=defaults[key];
+  countInput.value=Array.from(countInput.options).find(option => option.defaultSelected).value;
+  for (const {number,slider} of controls) number.value=slider.value=number.defaultValue;
   for (const {number} of finFields) number.value=number.defaultValue;
   roundedRootsInput.checked=roundedRootsInput.defaultChecked;
   extraTopMarginInput.value=extraTopMarginInput.defaultValue;

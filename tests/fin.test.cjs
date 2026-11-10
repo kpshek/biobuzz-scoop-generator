@@ -36,7 +36,10 @@ function openFinApp() {
     Object.assign(elements[attrs.id], { value:attrs.value || '', defaultValue:attrs.value || '',
       min:attrs.min || '', max:attrs.max || '', checked, defaultChecked:checked });
   }
-  elements['fin-count'].value = html.match(/<option value="(\d+)" selected>/)[1];
+  const countOptions = html.match(/<select id="fin-count"[^>]*>([\s\S]*?)<\/select>/)[1];
+  elements['fin-count'].options = [...countOptions.matchAll(/<option value="(\d+)"([^>]*)>/g)]
+    .map(match => ({ value:match[1], defaultSelected:/\bselected\b/.test(match[2]) }));
+  elements['fin-count'].value = elements['fin-count'].options.find(option=>option.defaultSelected).value;
   const views = [...html.matchAll(/data-view="([^"]+)"/g)].map(match => ({ ...element(), dataset:{ view:match[1] } }));
   let blob;
   const context = vm.createContext({
@@ -104,8 +107,44 @@ function stlComponents(bytes) {
   return components;
 }
 
+test('page load and reset use the requested single-fin defaults', async () => {
+  const app=openFinApp();
+  const expected={finCount:1,length:52,height:48,thickness:2,cutLength:33,
+    cutAngle:35,roundedRoots:true,extraTopMargin:5,independentFins:true};
+  async function assertSettings() {
+    app.fire('export-settings','click');
+    const json=JSON.parse(await app.downloads.at(-1).blob.text());
+    assert.deepEqual(json.settings,expected);
+    assert.equal(app.elements['length-slider'].value,'52');
+    assert.equal(app.elements['height-slider'].value,'48');
+  }
+  await assertSettings();
+  assert.equal(app.elements.footprint.textContent,'95.0 × 53.0 mm');
+  app.fire('export','click');
+  const stl=app.downloads.at(-1);
+  assert.equal(stl.name,'biobuzz-one-fin-L52-H53-C33-A35-M5-independent.stl');
+  assert.equal(stlComponents(Buffer.from(await stl.blob.arrayBuffer())),1);
+
+  app.set('fin-count',4,'change');
+  app.set('length-slider',55);
+  app.set('height-slider',40);
+  app.set('thickness',3);
+  app.set('cut-length',11);
+  app.set('cut-angle',45);
+  app.set('extra-top-margin',0);
+  app.check('independent-fins',false);
+  app.check('rounded-roots',false);
+  app.fire('reset','click');
+  await assertSettings();
+});
+
 test('extra top margin holds the screw row fixed and updates every side-profile edge', async () => {
   const app=openFinApp();
+  app.set('fin-count',4,'change');
+  app.check('independent-fins',false);
+  app.set('length',55);
+  app.set('height',40);
+  app.set('cut-angle',45);
   app.set('extra-top-margin',5);
   app.set('cut-length',11);
   assert.equal(app.elements.overall.textContent,'45.0 mm');
@@ -130,6 +169,9 @@ test('extra top margin holds the screw row fixed and updates every side-profile 
 test('independent fin STL has one closed, flat component per fin and exports its settings', async () => {
   const app=openFinApp();
   app.set('fin-count',3,'change');
+  app.set('length',55);
+  app.set('height',40);
+  app.set('cut-angle',45);
   app.set('extra-top-margin',5);
   app.set('thickness',3);
   app.set('cut-length',11);
@@ -158,8 +200,4 @@ test('independent fin STL has one closed, flat component per fin and exports its
   app.set('extra-top-margin',21);
   assert.equal(app.elements.export.disabled,true);
   assert.equal(app.elements['export-settings'].disabled,true);
-  app.fire('reset','click');
-  assert.equal(app.elements['independent-fins'].checked,false);
-  assert.equal(app.elements['rounded-roots'].checked,true);
-  assert.equal(app.elements['extra-top-margin'].value,'0');
 });
